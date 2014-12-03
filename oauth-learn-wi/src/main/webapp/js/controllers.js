@@ -11,8 +11,12 @@ angular.module('oulApp.controllers', [])
         .controller('MyCtrl2', ['$scope', function ($scope) {
 
             }])
-        .controller('MainCtrl', ['$scope', '$location', function ($scope, $location) {
-                console.log($location.search());
-                console.log($location.absUrl());
-                console.log($location.hash());
+        .controller('MainCtrl', ['$scope','$location',
+		function ($scope, $location) {
+                $scope.host=$location.host();
+		$scope.port=$location.port();
+		$scope.search=angular.toJson($location.search());
+		$scope.searchNative=angular.toJson(window.location.search);
+		$scope.hash=$location.hash();
+		$scope.path=$location.path();
             }]);
