@@ -24,10 +24,14 @@ function getNativeSearchObj() {
 }
 
 angular.module('oulApp.controllers', [])
-        .controller('AuthSubCtrl', ['$scope', '$http', function ($scope, $http) {
+        .controller('AuthSubCtrl', ['$scope', '$http', 'shared', function ($scope, $http, shared) {
 
-                $scope.STATES = {FIRST: 1, SECOND: 2, THREE: 3, ERROR: -1};
+                $scope.STATES = {FIRST: 1, SECOND: 2, THREE: 3, FOUR: 4, ERROR: -1};
+
                 $scope.state = $scope.STATES.FIRST;
+
+                $scope.shared=shared;
+
                 $scope.authsub = {
                     slsuToken: (getNativeSearchObj().token ? getNativeSearchObj().token : '')
                 };
@@ -50,10 +54,40 @@ angular.module('oulApp.controllers', [])
                     };
 
                     $http(req)
-                            .success(function (data, status) {
+                            .success(function (data) {
                                 console.log(data);
-                                $scope.sessionToken = data;
+                                $scope.authsub.sessionToken = data.split('=')[1];
                                 $scope.state = $scope.STATES.THREE;
+                            })
+                            .error(function (data, status) {
+                                console.log(data);
+                                $scope.err = {
+                                    data: data,
+                                    status: status
+                                };
+                                $scope.state = $scope.STATES.ERROR;
+                            });
+                };
+
+                $scope.authSub3Call = function () {
+
+                    var req = {
+                        method: 'GET',
+                        url: 'http://devhelper:8080/oul/rest/proxy',
+                        params: {
+                            uri: 'https://google.com/accounts/AuthSubTokenInfo'
+                        },
+                        headers: {
+                            'X-Proxy-This': 'Authorization=' + 'AuthSub token=' + $scope.authsub.sessionToken
+                        }
+
+                    };
+
+                    $http(req)
+                            .success(function (data) {
+                                console.log(data);
+                                $scope.tokenInfo = data;
+                                $scope.state = $scope.STATES.FOUR;
                             })
                             .error(function (data, status) {
                                 console.log(data);
@@ -68,8 +102,11 @@ angular.module('oulApp.controllers', [])
         .controller('MyCtrl2', ['$scope', function ($scope) {
 
             }])
-        .controller('MainCtrl', ['$scope', '$location',
-            function ($scope, $location) {
+        .controller('MainCtrl', ['$scope', '$location', 'shared',
+            function ($scope, $location, shared) {
+                console.log(shared);
+                shared.host = $location.host();
+                shared.port = $location.port();
                 $scope.host = $location.host();
                 $scope.port = $location.port();
                 $scope.search = angular.toJson($location.search());

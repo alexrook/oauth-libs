@@ -48,9 +48,10 @@ public class ProxyRS {
             String line = reader.readLine();
             while (line != null) {
                 buf.append(line);
+                buf.append("\n");
                 line = reader.readLine();
             }
-
+            buf.deleteCharAt(buf.length() - 1);
             httpConn.disconnect();
 
             return Response.ok(buf.toString()).build();

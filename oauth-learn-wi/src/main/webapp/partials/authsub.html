@@ -1,44 +1,71 @@
-<p>AuthSub API Call with Calendar Scope</p>
+<p>AuthSub API Call with Calendar API Scope</p>
+
+
+<p>
+    From https://developers.google.com/accounts/docs/AuthSub: </p>
+<p>
+    important: AuthSub has been officially deprecated as of April 20, 2012. 
+    It will continue to work as per our deprecation policy, 
+    but we encourage you to migrate to OAuth 2.0 as soon as possible.
+</p>
 
 <p>state: {{state}}</p>
 
 <div id="ats1" data-ng-show="state === STATES.FIRST">
-    <a href="http://google.com/accounts/AuthSubRequest?next=http://devhelper:8080/oul/%23/authsub&scope=http://www.google.com/calendar/feeds/default/allcalendars/full&session=1&secure=0">
-        AuthSub Call
+    <a href="http://google.com/accounts/AuthSubRequest?next=http://{{shared.host}}:{{shared.port}}/oul/%23/authsub&scope=http://www.google.com/calendar/feeds/default/allcalendars/full&session=1&secure=0">
+        First:  AuthSub Initial Call
     </a>
 
     <pre>
         http://google.com/accounts/AuthSubRequest?
-        next=http://localhost:8080/#/authsub
+        next=http://{{shared.host}}:{{shared.port}}/oul/#/authsub
         &scope=http://www.google.com/calendar/feeds/default/allcalendars/full
         &session=1&secure=0
     </pre>
+
 </div>
 
 <div id="ats2" data-ng-show="state === STATES.SECOND">
 
-    <a href="" data-ng-click="authSub2Call()">Next AuthSub Call</a>
+    <a href="" data-ng-click="authSub2Call()">Next: AuthSub Session Call</a>
+
     <pre>
-       //TODO: 
+       Short Live Single Use Token :{{authsub.slsuToken}}
     </pre>
 
 </div>
 
 <div id="ats3" data-ng-show="state === STATES.THREE">
+    <p>
+        I have not found how to use Google public api with AuthSub
+        maybe because AuthSub outdated.
+        So just call verification token
+    </p>
+    <p>
+        Currently necessary to use Oauth 2.0
+    </p>
+    <a href="" data-ng-click="authSub3Call()">Next: AuthSub Token Info Call</a>
 
     <pre>
-        //TODO: Session Access {{sessionToken}}
+        Session Access {{authsub.sessionToken}}
     </pre>
 
 </div>
 
+<div id="ats4" data-ng-show="state === STATES.FOUR">
+
+    <pre>
+        tokenInfo : {{tokenInfo}}
+    </pre>
+
+</div>
 
 <div id="ats-1" data-ng-show="state === STATES.ERROR">
 
     <p>some error occured</p>
 
     <pre>
-        //Server Returns Error:{{err.status}} , {{err.data}}
+        Server Returns Error:{{err.status}} , {{err.data}}
     </pre>
 
 </div>
