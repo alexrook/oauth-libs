@@ -1,7 +1,9 @@
 <p>AuthSub API Call with Calendar Scope</p>
 
-<div id="ats1">
-    <a href="http://google.com/accounts/AuthSubRequest?next=http://localhost:8080/%23/authsub&scope=http://www.google.com/calendar/feeds/default/allcalendars/full&session=1&secure=0">
+<p>state: {{state}}</p>
+
+<div id="ats1" data-ng-show="state === STATES.FIRST">
+    <a href="http://google.com/accounts/AuthSubRequest?next=http://devhelper:8080/oul/%23/authsub&scope=http://www.google.com/calendar/feeds/default/allcalendars/full&session=1&secure=0">
         AuthSub Call
     </a>
 
@@ -13,13 +15,31 @@
     </pre>
 </div>
 
-<div id="ats2">
-    
-    <a href="javascript:void()" data-ng-click="authSub2Call()">Next AuthSub Call</a>
+<div id="ats2" data-ng-show="state === STATES.SECOND">
+
+    <a href="" data-ng-click="authSub2Call()">Next AuthSub Call</a>
     <pre>
        //TODO: 
     </pre>
-    
+
 </div>
 
+<div id="ats3" data-ng-show="state === STATES.THREE">
+
+    <pre>
+        //TODO: Session Access {{sessionToken}}
+    </pre>
+
+</div>
+
+
+<div id="ats-1" data-ng-show="state === STATES.ERROR">
+
+    <p>some error occured</p>
+
+    <pre>
+        //Server Returns Error:{{err.status}} , {{err.data}}
+    </pre>
+
+</div>
 
