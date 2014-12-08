@@ -30,7 +30,7 @@ angular.module('oulApp.controllers', [])
 
                 $scope.state = $scope.STATES.FIRST;
 
-                $scope.shared=shared;
+                $scope.shared = shared;
 
                 $scope.authsub = {
                     slsuToken: (getNativeSearchObj().token ? getNativeSearchObj().token : '')
@@ -99,7 +99,14 @@ angular.module('oulApp.controllers', [])
                             });
                 };
             }])
-        .controller('MyCtrl2', ['$scope', function ($scope) {
+        .controller('RedCtrl', ['$scope', '$http', function ($scope, $http) {
+
+                $scope.getOther = function () {
+                    window.location.href='ts/redirected.html';
+                };
+                
+               
+
 
             }])
         .controller('MainCtrl', ['$scope', '$location', 'shared',

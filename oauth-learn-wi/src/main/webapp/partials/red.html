@@ -1,2 +1,16 @@
-<p>This is the partial for view 2.</p>
+<p>redirect samples</p>
 
+<ul>
+    <li>
+        <a href="" data-ng-click="getOther()">VIA JavaScript Redirect</a>
+    </li>
+
+    <li>
+        <form action="rest/proxy/redirect" method="GET">
+            <input type="hidden" value="../../ts/redirected.html" name="uri">
+            <button type="submit">VIA Proxy Redirect</button>
+        </form>
+    </li>
+
+
+</ul>

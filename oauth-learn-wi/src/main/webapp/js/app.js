@@ -7,6 +7,6 @@ angular.module('oulApp', [
     'oulApp.controllers'
 ]).config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/authsub', {templateUrl: 'partials/authsub.html', controller: 'AuthSubCtrl'});
-        $routeProvider.when('/view2', {templateUrl: 'partials/partial2.html', controller: 'MyCtrl2'});
+        $routeProvider.when('/red', {templateUrl: 'partials/red.html', controller: 'RedCtrl'});
         $routeProvider.otherwise({redirectTo: '/authsub'});
     }]);

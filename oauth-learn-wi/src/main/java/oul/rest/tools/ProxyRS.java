@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -64,6 +65,14 @@ public class ProxyRS {
 
     }
 
+    @GET
+    @Path("redirect")
+    public Response redirect(@QueryParam("uri") String uri) {
+        return Response.status(
+                Response.Status.SEE_OTHER).header("location",
+                        uri).build();
+    }
+
     private Map<String, String> getProxyHeaders(HttpHeaders headers) throws IOException {
 
         Map<String, String> map = new HashMap<String, String>();
@@ -93,4 +102,5 @@ public class ProxyRS {
         }
         return map;
     }
+
 }
