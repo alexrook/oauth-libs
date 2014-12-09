@@ -102,11 +102,19 @@ angular.module('oulApp.controllers', [])
         .controller('RedCtrl', ['$scope', '$http', function ($scope, $http) {
 
                 $scope.getOther = function () {
-                    window.location.href='ts/redirected.html';
+                    window.location.href = 'ts/redirected.html';
                 };
-                
-               
 
+            }])
+        .controller('GglCtrl', ['$scope', '$http', '$cookies', function ($scope, $http, $cookies) {
+
+                $scope.STATES = {FIRST: 1, SECOND: 2, THREE: 3, FOUR: 4, ERROR: -1};
+
+                $scope.state = $cookies.accessToken ? $scope.STATES.SECOND : $scope.STATES.FIRST;
+
+                console.log($cookies.accessToken);
+
+                $scope.accessToken = $cookies.accessToken;
 
             }])
         .controller('MainCtrl', ['$scope', '$location', 'shared',

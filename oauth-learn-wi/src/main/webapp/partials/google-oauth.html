@@ -1,0 +1,30 @@
+<p>Google OAuth 2.0</p>
+
+
+
+<p>state: {{state}}</p>
+
+<div id="ats1" data-ng-show="state === STATES.FIRST">
+
+    <a href="rest/ggl/first">
+        First:  Google OAuth initial call
+    </a>
+
+</div>
+
+<div id="ats1" data-ng-show="state === STATES.SECOND">
+
+    <p>Found Access Token <span>{{accessToken}}</span></p>
+    
+</div>
+
+<div id="ats-1" data-ng-show="state === STATES.ERROR">
+
+    <p>some error occured</p>
+
+    <pre>
+        Server Returns Error:{{err.status}} , {{err.data}}
+    </pre>
+
+</div>
+
