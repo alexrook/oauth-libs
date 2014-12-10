@@ -4,13 +4,16 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Properties;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
+import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.OAuthAuthzResponse;
 import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
@@ -84,6 +87,17 @@ public class GoogleOauthRS {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
 
+    }
+
+    public String getProfile(@CookieParam("accessToken") Cookie accessToken) {
+        /*
+         OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest("https://graph.facebook.com/me")
+         .setAccessToken(accessToken).buildQueryMessage();
+
+         OAuthResourceResponse resourceResponse = oAuthClient.resource(bearerClientRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
+         curl -H 'Authorization: Bearer <accessToken>'  https://www.googleapis.com/plus/v1/people/me
+         */
+        return null;
     }
 
     private Properties getLocalProperties() throws IOException {
