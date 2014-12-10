@@ -42,7 +42,7 @@ public class GoogleOauthRS {
             return result;
 
         } catch (Exception ex) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
     }
 
@@ -71,13 +71,17 @@ public class GoogleOauthRS {
             Long expiresIn = oAuthResponse.getExpiresIn();
 
             Response result = Response.seeOther(URI.create("../#/google-oauth"))
-                    .cookie(new NewCookie("accessToken", accessToken),
-                            new NewCookie("expiresIn", Long.toString(expiresIn))).build();
+                    .cookie(new NewCookie("accessToken", accessToken, "/", null, null,
+                                    expiresIn.intValue() - 1,
+                                    false),
+                            new NewCookie("expiresIn", expiresIn.toString(), "/", null, null,
+                                    expiresIn.intValue() + 1,
+                                    false)).build();
 
             return result;
 
         } catch (Exception ex) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
         }
 
     }
