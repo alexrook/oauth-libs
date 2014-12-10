@@ -14,8 +14,16 @@
 
 <div id="ats1" data-ng-show="state === STATES.SECOND">
 
-    <p>Found Access Token <span>{{accessToken}}</span></p>
+    <p>Found Access Token <span>{{accessToken}}, expires in {{expiresIn}}</span></p>
+    <p>Now we can query profile info via:
+    </p>
+    <ul>
+        <li><a href="">pure Ajax request</a></li>
+        <li><a href="">server proxy</a></li>
+    </ul>
     
+    <p><a href="" data-ng-click="clearSession()">Or cleanup session</a></p>
+
 </div>
 
 <div id="ats-1" data-ng-show="state === STATES.ERROR">

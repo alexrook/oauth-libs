@@ -23,6 +23,10 @@ function getNativeSearchObj() {
     return result;
 }
 
+function delCookie(name) {
+  document.cookie = name + "=" + "; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+}
+
 angular.module('oulApp.controllers', [])
         .controller('AuthSubCtrl', ['$scope', '$http', 'shared', function ($scope, $http, shared) {
 
@@ -106,15 +110,39 @@ angular.module('oulApp.controllers', [])
                 };
 
             }])
-        .controller('GglCtrl', ['$scope', '$http', '$cookies', function ($scope, $http, $cookies) {
+        .controller('GglCtrl', ['$scope', '$http', '$cookies', function ($scope, $http, $cookies){
 
                 $scope.STATES = {FIRST: 1, SECOND: 2, THREE: 3, FOUR: 4, ERROR: -1};
+                var s=$cookies['accessToken'];
 
-                $scope.state = $cookies.accessToken ? $scope.STATES.SECOND : $scope.STATES.FIRST;
+                
+                console.log($cookies['accessToken']);
+                console.log($cookies['expiresIn']);
 
-                console.log($cookies.accessToken);
+                $scope.state = $cookies['accessToken'] ? $scope.STATES.SECOND : $scope.STATES.FIRST;
 
-                $scope.accessToken = $cookies.accessToken;
+
+
+                $scope.accessToken = $cookies['accessToken'];
+                $scope.expiresIn = $cookies['expiresIn'];
+
+
+
+                $scope.profileInfoAjax = function () {
+
+                };
+
+                $scope.profileInfoProxy = function () {
+
+                };
+
+
+                $scope.clearSession = function () {
+                    delete $cookies['accessToken'];
+                    delete $cookies['expiresIn'];
+                    // window.location.href=".";
+                    $scope.state = $cookies.accessToken ? $scope.STATES.SECOND : $scope.STATES.FIRST;
+                };
 
             }])
         .controller('MainCtrl', ['$scope', '$location', 'shared',
