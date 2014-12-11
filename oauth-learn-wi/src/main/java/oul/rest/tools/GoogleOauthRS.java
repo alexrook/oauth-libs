@@ -103,7 +103,7 @@ public class GoogleOauthRS {
          */
         try {
             OAuthClientRequest bearerClientRequest
-                    = new OAuthBearerClientRequest("https://www.googleapis.com/plus/v1/people/me")
+                    = new OAuthBearerClientRequest(getGoogleApiProfileURI())
                     .setAccessToken(accessToken.getValue()).buildQueryMessage();
 
             OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
@@ -125,12 +125,12 @@ public class GoogleOauthRS {
 
     @GET
     @Path("revoke")
-    public Response singOff(@CookieParam("accessToken") Cookie accessToken,
+    public Response signOut(@CookieParam("accessToken") Cookie accessToken,
             @CookieParam("expiresIn") Cookie expiresIn) {
 
         try {
             OAuthClientRequest request = OAuthClientRequest
-                    .authorizationLocation("https://accounts.google.com/o/oauth2/revoke")
+                    .authorizationLocation(getGoogleClientRevokeURI())
                     .setParameter("token", accessToken.getValue())
                     .buildQueryMessage();
             OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
@@ -179,5 +179,13 @@ public class GoogleOauthRS {
 
     private String getGoogleClientResponseType() throws IOException {
         return getLocalProperties().getProperty("google.oauth.responseType");
+    }
+
+    private String getGoogleClientRevokeURI() throws IOException {
+        return getLocalProperties().getProperty("google.oauth.revokeUri");
+    }
+
+    private String getGoogleApiProfileURI() throws IOException {
+        return getLocalProperties().getProperty("google.api.profileUri");
     }
 }
