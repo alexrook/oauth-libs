@@ -17,6 +17,8 @@ import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.OAuthAuthzResponse;
 import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
+import org.apache.oltu.oauth2.client.response.OAuthResourceResponse;
+import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.OAuthProviderType;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 
@@ -89,15 +91,33 @@ public class GoogleOauthRS {
 
     }
 
-    public String getProfile(@CookieParam("accessToken") Cookie accessToken) {
-        /*
-         OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest("https://graph.facebook.com/me")
-         .setAccessToken(accessToken).buildQueryMessage();
+    @GET
+    @Path("profile")
+    public Response getProfile(@CookieParam("accessToken") Cookie accessToken) {
 
-         OAuthResourceResponse resourceResponse = oAuthClient.resource(bearerClientRequest, OAuth.HttpMethod.GET, OAuthResourceResponse.class);
+        /*         
          curl -H 'Authorization: Bearer <accessToken>'  https://www.googleapis.com/plus/v1/people/me
          */
-        return null;
+        try {
+            OAuthClientRequest bearerClientRequest
+                    = new OAuthBearerClientRequest("https://www.googleapis.com/plus/v1/people/me")
+                    .setAccessToken(accessToken.getValue()).buildQueryMessage();
+
+            OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
+
+            OAuthResourceResponse resourceResponse = oAuthClient
+                    .resource(bearerClientRequest,
+                            OAuth.HttpMethod.GET, OAuthResourceResponse.class);
+
+            return Response
+                    .status(resourceResponse.getResponseCode())
+                    .entity(resourceResponse.getBody())
+                    .build();
+
+        } catch (Exception ex) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+
     }
 
     private Properties getLocalProperties() throws IOException {
