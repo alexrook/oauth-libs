@@ -3,8 +3,6 @@ package oul.rest.tools;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
@@ -22,7 +20,6 @@ import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.client.response.OAuthResourceResponse;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.OAuthProviderType;
-import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 
 /**
