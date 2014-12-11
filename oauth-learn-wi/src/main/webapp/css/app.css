@@ -1,4 +1,29 @@
 /* app css stylesheet */
 body {
-    margin-left: 12px;
+    margin: 12px;
+}
+
+.header {
+    overflow: hidden;
+   
+}
+.location-info {
+   float: right;
+}
+
+.menu {
+    float: left;
+}
+
+.menu p{
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
+.menu ul{
+    margin-top: 0px;
+}
+
+[data-ng-view]{
+
 }
