@@ -1,7 +1,5 @@
 <p>Google OAuth 2.0</p>
 
-
-
 <p>state: {{state}}</p>
 
 <div id="ats1" data-ng-show="state === STATES.FIRST">
@@ -12,26 +10,37 @@
 
 </div>
 
-<div id="ats1" data-ng-show="state === STATES.SECOND">
+<div id="ats2" data-ng-show="state === STATES.SECOND">
 
     <p>Found Access Token <span>{{accessToken}}, expires in {{expiresIn}}</span></p>
     <p>Now we can query profile info via:
     </p>
     <ul>
-        <li><a href="">pure Ajax request</a></li>
-        <li><a href="">server proxy</a></li>
+        <li><a href="" data-ng-click="profileInfoAjax()">pure Ajax request</a></li>
+        <li><a href="" data-ng-click="profileInfoProxy()">server proxy</a></li>
     </ul>
-    
-    <p><a href="" data-ng-click="clearSession()">Or cleanup session</a></p>
+    Or
+</div>
+
+<div id="ats3" data-ng-show="state === STATES.THREE">
+
+    obtained profile:
+    <pre>
+        {{profile|json}}
+    </pre>
 
 </div>
 
+<p data-ng-show="state >= STATES.SECOND">
+    <a href="" data-ng-click="clearSession()">cleanup session</a>
+</p>
+
 <div id="ats-1" data-ng-show="state === STATES.ERROR">
 
-    <p>some error occured</p>
+    <p>Some error occured.</p>
 
     <pre>
-        Server Returns Error:{{err.status}} , {{err.data}}
+        Server returns Error:{{err.status}} , {{err.data}}
     </pre>
 
 </div>

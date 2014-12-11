@@ -23,10 +23,6 @@ function getNativeSearchObj() {
     return result;
 }
 
-function delCookie(name) {
-  document.cookie = name + "=" + "; expires=Thu, 01 Jan 1970 00:00:01 GMT";
-}
-
 angular.module('oulApp.controllers', [])
         .controller('AuthSubCtrl', ['$scope', '$http', 'shared', function ($scope, $http, shared) {
 
@@ -47,7 +43,7 @@ angular.module('oulApp.controllers', [])
 
                     var req = {
                         method: 'GET',
-                        url: 'http://devhelper:8080/oul/rest/proxy',
+                        url: 'rest/proxy',
                         params: {
                             uri: 'https://google.com/accounts/AuthSubSessionToken'
                         },
@@ -77,7 +73,7 @@ angular.module('oulApp.controllers', [])
 
                     var req = {
                         method: 'GET',
-                        url: 'http://devhelper:8080/oul/rest/proxy',
+                        url: 'rest/proxy',
                         params: {
                             uri: 'https://google.com/accounts/AuthSubTokenInfo'
                         },
@@ -110,12 +106,12 @@ angular.module('oulApp.controllers', [])
                 };
 
             }])
-        .controller('GglCtrl', ['$scope', '$http', '$cookies', function ($scope, $http, $cookies){
+        .controller('GglCtrl', ['$scope', '$http', '$cookies', function ($scope, $http, $cookies) {
 
                 $scope.STATES = {FIRST: 1, SECOND: 2, THREE: 3, FOUR: 4, ERROR: -1};
-                var s=$cookies['accessToken'];
+                var s = $cookies['accessToken'];
 
-                
+
                 console.log($cookies['accessToken']);
                 console.log($cookies['expiresIn']);
 
@@ -129,11 +125,41 @@ angular.module('oulApp.controllers', [])
 
 
                 $scope.profileInfoAjax = function () {
-
+                    var req = {
+                        method: 'GET',
+                        url: 'https://www.googleapis.com/plus/v1/people/me',
+                        headers: {
+                            'Authorization': 'Bearer ' + $scope.accessToken
+                        }
+                    };
+                    $http(req)
+                            .success(function (data) {
+                                $scope.state = $scope.STATES.THREE;
+                                $scope.profile = data;
+                            })
+                            .error(function (data, status) {
+                                $scope.state = $scope.STATES.ERROR;
+                                $scope.err = {
+                                    data: data,
+                                    status: status
+                                };
+                            });
                 };
 
                 $scope.profileInfoProxy = function () {
-
+                    $http
+                            .get('rest/ggl/profile')
+                            .success(function (data) {
+                                $scope.state = $scope.STATES.THREE;
+                                $scope.profile = data;
+                            })
+                            .error(function (data, status) {
+                                $scope.state = $scope.STATES.ERROR;
+                                $scope.err = {
+                                    data: data,
+                                    status: status
+                                };
+                            });
                 };
 
 
