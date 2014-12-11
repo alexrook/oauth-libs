@@ -164,10 +164,22 @@ angular.module('oulApp.controllers', [])
 
 
                 $scope.clearSession = function () {
-                    delete $cookies['accessToken'];
-                    delete $cookies['expiresIn'];
-                    // window.location.href=".";
-                    $scope.state = $cookies.accessToken ? $scope.STATES.SECOND : $scope.STATES.FIRST;
+
+                    $http
+                            .get('rest/ggl/revoke')
+                            .success(function () {
+                                delete $cookies['accessToken'];
+                                delete $cookies['expiresIn'];
+                                $scope.state = $scope.STATES.FIRST;
+
+                            })
+                            .error(function (data, status) {
+                                $scope.state = $scope.STATES.ERROR;
+                                $scope.err = {
+                                    data: data,
+                                    status: status
+                                };
+                            });
                 };
 
             }])

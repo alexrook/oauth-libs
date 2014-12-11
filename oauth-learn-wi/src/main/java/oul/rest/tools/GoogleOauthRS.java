@@ -3,6 +3,8 @@ package oul.rest.tools;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
@@ -20,6 +22,7 @@ import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.client.response.OAuthResourceResponse;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.OAuthProviderType;
+import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 
 /**
@@ -111,6 +114,37 @@ public class GoogleOauthRS {
 
             return Response
                     .status(resourceResponse.getResponseCode())
+                    .entity(resourceResponse.getBody())
+                    .build();
+
+        } catch (Exception ex) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+
+    }
+
+    @GET
+    @Path("revoke")
+    public Response singOff(@CookieParam("accessToken") Cookie accessToken,
+            @CookieParam("expiresIn") Cookie expiresIn) {
+
+        try {
+            OAuthClientRequest request = OAuthClientRequest
+                    .authorizationLocation("https://accounts.google.com/o/oauth2/revoke")
+                    .setParameter("token", accessToken.getValue())
+                    .buildQueryMessage();
+            OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
+            OAuthResourceResponse resourceResponse = oAuthClient
+                    .resource(request,
+                            OAuth.HttpMethod.GET, OAuthResourceResponse.class);
+            return Response
+                    .status(resourceResponse.getResponseCode())
+                    .cookie(new NewCookie("accessToken", "", "/", null, null,
+                                    0,
+                                    false),
+                            new NewCookie("expiresIn", "", "/", null, null,
+                                    0,
+                                    false)) //del old cookie
                     .entity(resourceResponse.getBody())
                     .build();
 
