@@ -21,15 +21,16 @@
 
     </head>
     <body data-ng-controller="MainCtrl">
-        
+
         <div class="header">
-            
+
             <div class="menu">
                 <p>Test methods:</p>
                 <ul>
                     <li><a href="#/authsub">authsub</a></li>
                     <li><a href="#/red">red</a></li>
                     <li><a href="#/google-oauth">Google Oauth</a></li>
+                    <li><a href="restricted/secret.html">Restricted Area</a></li>
                 </ul>
             </div>
 
@@ -42,7 +43,7 @@
                 $location.hash() = <span data-ng-bind="hash"></span> <br>
             </div>
         </div>
-        
+
         <div data-ng-view></div>
 
     </body>
