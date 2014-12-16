@@ -10,5 +10,6 @@ angular.module('oulApp', [
         $routeProvider.when('/authsub', {templateUrl: 'partials/authsub.html', controller: 'AuthSubCtrl'});
         $routeProvider.when('/red', {templateUrl: 'partials/red.html', controller: 'RedCtrl'});
         $routeProvider.when('/google-oauth', {templateUrl: 'partials/google-oauth.html', controller: 'GglCtrl'});
-        $routeProvider.otherwise({redirectTo: '/authsub'});
+         $routeProvider.when('/httpauth', {templateUrl: 'partials/httpauth.html', controller: 'HttpAuthCtrl'});
+        $routeProvider.otherwise({redirectTo: '/httpauth'});
     }]);

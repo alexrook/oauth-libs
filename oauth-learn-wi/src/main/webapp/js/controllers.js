@@ -24,6 +24,9 @@ function getNativeSearchObj() {
 }
 
 angular.module('oulApp.controllers', [])
+        .controller('HttpAuthCtrl', ['$scope', function ($scope) {
+
+            }])
         .controller('AuthSubCtrl', ['$scope', '$http', 'shared', function ($scope, $http, shared) {
 
                 $scope.STATES = {FIRST: 1, SECOND: 2, THREE: 3, FOUR: 4, ERROR: -1};
