@@ -6,10 +6,11 @@ angular.module('oulApp', [
     'ngCookies',
     'oulApp.services',
     'oulApp.controllers'
-]).config(['$routeProvider','$cookiesProvider', function ($routeProvider,$cookiesProvider) {
+]).config(['$routeProvider', '$cookiesProvider', function ($routeProvider, $cookiesProvider) {
         $routeProvider.when('/authsub', {templateUrl: 'partials/authsub.html', controller: 'AuthSubCtrl'});
         $routeProvider.when('/red', {templateUrl: 'partials/red.html', controller: 'RedCtrl'});
         $routeProvider.when('/google-oauth', {templateUrl: 'partials/google-oauth.html', controller: 'GglCtrl'});
-         $routeProvider.when('/httpauth', {templateUrl: 'partials/httpauth.html', controller: 'HttpAuthCtrl'});
+        $routeProvider.when('/httpauth', {templateUrl: 'partials/httpauth.html', controller: 'HttpAuthCtrl'});
+        $routeProvider.when('/filter-auth', {templateUrl: 'partials/filterauth.html', controller: 'FilterAuthCtrl'});
         $routeProvider.otherwise({redirectTo: '/httpauth'});
     }]);

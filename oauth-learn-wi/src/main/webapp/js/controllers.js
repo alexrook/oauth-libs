@@ -186,6 +186,10 @@ angular.module('oulApp.controllers', [])
                 };
 
             }])
+        .controller('FilterAuthCtrl', ['$scope', '$location', 'shared',
+            function ($scope, $location, shared) {
+                //todo
+            }])
         .controller('MainCtrl', ['$scope', '$location', 'shared',
             function ($scope, $location, shared) {
                 console.log(shared);
