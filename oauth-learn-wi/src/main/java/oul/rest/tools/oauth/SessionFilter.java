@@ -17,6 +17,7 @@ import javax.servlet.ServletResponse;
 public class SessionFilter implements Filter {
 
     private static final boolean debug = true;
+    private static long counter = 0;
 
     private FilterConfig filterConfig = null;
 
@@ -25,6 +26,7 @@ public class SessionFilter implements Filter {
 
     private void doBeforeProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
+
         if (debug) {
             log("SessionFilter:DoBeforeProcessing");
         }
@@ -80,9 +82,9 @@ public class SessionFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException {
-
+        counter++;
         if (debug) {
-            log("SessionFilter:doFilter()");
+            log("SessionFilter:doFilter()=" + counter);
         }
 
         doBeforeProcessing(request, response);
