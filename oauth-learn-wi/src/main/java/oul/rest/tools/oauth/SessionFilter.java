@@ -4,78 +4,58 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author moroz
  */
-public class SessionFilter implements Filter {
+public class SessionFilter implements Filter, IConst {
 
     private static final boolean debug = true;
     private static long counter = 0;
 
     private FilterConfig filterConfig = null;
+    
+    @Inject
+    private IUserStorageEx storage;
 
     public SessionFilter() {
     }
 
-    private void doBeforeProcessing(ServletRequest request, ServletResponse response)
+    private void doBeforeProcessing(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
         if (debug) {
             log("SessionFilter:DoBeforeProcessing");
         }
 
-        // Write code here to process the request and/or response before
-        // the rest of the filter chain is invoked.
-        // For example, a logging filter might log items on the request object,
-        // such as the parameters.
-	/*
-         for (Enumeration en = request.getParameterNames(); en.hasMoreElements(); ) {
-         String name = (String)en.nextElement();
-         String values[] = request.getParameterValues(name);
-         int n = values.length;
-         StringBuffer buf = new StringBuffer();
-         buf.append(name);
-         buf.append("=");
-         for(int i=0; i < n; i++) {
-         buf.append(values[i]);
-         if (i < n-1)
-         buf.append(",");
-         }
-         log(buf.toString());
-         }
-         */
+        for (Cookie cookie : request.getCookies()) {
+            if (cookie.getName().equalsIgnoreCase(AUTH_COOKIE_NAME)){
+                if (storage.check(cookie)){
+                    return;
+                } else {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                }
+            }
+        }
+
     }
 
-    private void doAfterProcessing(ServletRequest request, ServletResponse response)
+    private void doAfterProcessing(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
         if (debug) {
             log("SessionFilter:DoAfterProcessing");
         }
 
-	// Write code here to process the request and/or response after
-        // the rest of the filter chain is invoked.
-        // For example, a logging filter might log the attributes on the
-        // request object after the request has been processed. 
-	/*
-         for (Enumeration en = request.getAttributeNames(); en.hasMoreElements(); ) {
-         String name = (String)en.nextElement();
-         Object value = request.getAttribute(name);
-         log("attribute: " + name + "=" + value.toString());
-
-         }
-         */
-        // For example, a filter might append something to the response.
-	/*
-         PrintWriter respOut = new PrintWriter(response.getWriter());
-         respOut.println("<P><B>This has been appended by an intrusive filter.</B>");
-         */
     }
 
     @Override
@@ -87,20 +67,20 @@ public class SessionFilter implements Filter {
             log("SessionFilter:doFilter()=" + counter);
         }
 
-        doBeforeProcessing(request, response);
+        HttpServletRequest httpReq = (HttpServletRequest) request;
+        HttpServletResponse httpRes = (HttpServletResponse) response;
+
+        doBeforeProcessing(httpReq, httpRes);
 
         Throwable problem = null;
         try {
             chain.doFilter(request, response);
         } catch (Throwable t) {
-            // If an exception is thrown somewhere down the filter chain,
-            // we still want to execute our after processing, and then
-            // rethrow the problem after that.
             problem = t;
             t.printStackTrace();
         }
 
-        doAfterProcessing(request, response);
+        doAfterProcessing(httpReq, httpRes);
 
         // If there was a problem, we want to rethrow it if it is
         // a known type, otherwise log it.
