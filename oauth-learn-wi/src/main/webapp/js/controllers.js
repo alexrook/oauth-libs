@@ -193,12 +193,14 @@ angular.module('oulApp.controllers', [])
         .controller('MainCtrl', ['$scope', '$location', 'shared',
             function ($scope, $location, shared) {
                 console.log(shared);
-                shared.host = $location.host();
-                shared.port = $location.port();
-                $scope.host = $location.host();
-                $scope.port = $location.port();
-                $scope.search = angular.toJson($location.search());
-                $scope.searchNative = angular.toJson(getNativeSearchObj());
-                $scope.hash = $location.hash();
-                $scope.path = $location.path();
+                $scope.$on('$locationChangeSuccess', function () {
+                    shared.host = $location.host();
+                    shared.port = $location.port();
+                    $scope.host = $location.host();
+                    $scope.port = $location.port();
+                    $scope.search = angular.toJson($location.search());
+                    $scope.searchNative = angular.toJson(getNativeSearchObj());
+                    $scope.hash = $location.hash();
+                    $scope.path = $location.path();
+                });
             }]);
