@@ -5,10 +5,15 @@ body {
 
 .header {
     overflow: hidden;
-   
+
 }
+
+.header h1 {
+    margin-top: 0px;
+}
+
 .location-info {
-   float: right;
+    float: right;
 }
 
 .menu {
