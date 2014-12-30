@@ -1,0 +1,35 @@
+{
+  "kind": "plus#person",
+  "etag": "\"ilkmlkmlklmlkjoioj\"",
+  "gender": "male",
+  "emails": [
+  ],
+  "objectType": "person",
+  "id": "12345678908765",
+  "displayName": "Exam Ple",
+  "name": {
+    "familyName": "Exam",
+    "givenName": "Ple"
+  },
+  "url": "https://plus.google.com/12345678908765",
+  "image": {
+    "url": "https://some-very-long-url.jpg",
+    "isDefault": false
+  },
+  "isPlusUser": true,
+  "language": "ru",
+  "circledByCount": 0,
+  "verified": false,
+  "cover": {
+    "layout": "banner",
+    "coverPhoto": {
+      "url": "https://some-very-long-url.jpg",
+      "height": 626,
+      "width": 940
+    },
+    "coverInfo": {
+      "topImageOffset": 0,
+      "leftImageOffset": 0
+    }
+  }
+}

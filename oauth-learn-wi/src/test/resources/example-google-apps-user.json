@@ -1,0 +1,25 @@
+{
+  "kind": "plus#person",
+  "etag": "\"lkrmfoelkrfoeirmelcjkfsdf\"",
+  "emails": [
+    {
+      "value": "user@example.com",
+      "type": "account"
+    }
+  ],
+  "objectType": "person",
+  "id": "780457890023455",
+  "displayName": "Black Smith",
+  "name": {
+    "familyName": "Smith",
+    "givenName": "Black"
+  },
+  "image": {
+    "url": "https://some-long-url.jpg",
+    "isDefault": true
+  },
+  "isPlusUser": false,
+  "language": "en",
+  "verified": false,
+  "domain": "example.com"
+}
