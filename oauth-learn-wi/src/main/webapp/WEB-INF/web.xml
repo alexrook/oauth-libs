@@ -19,15 +19,32 @@
         <servlet-name>ForwardExpBaseServlet</servlet-name>
         <servlet-class>oul.exp.ForwardExpBaseServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GoogleOAuthServlet</servlet-name>
+        <servlet-class>oul.web.tools.oauth.GoogleOAuthServlet</servlet-class>
+        <init-param>
+            <param-name>properties-file</param-name>
+            <param-value>local.properties</param-value>
+        </init-param>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ForwardExpBaseServlet</servlet-name>
         <url-pattern>/expbase</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GoogleOAuthServlet</servlet-name>
+        <url-pattern>/oauth/google/callback</url-pattern>
+        <url-pattern>/oauth/google/login</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
     <error-page>
         <error-code>401</error-code>
+        <location>/err/error.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>400</error-code>
         <location>/err/error.jsp</location>
     </error-page>
     <security-constraint>

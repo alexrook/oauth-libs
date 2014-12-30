@@ -19,5 +19,11 @@
                 </a>
             </p>
         </c:if>
+        <c:if test="${requestScope[\"javax.servlet.error.status_code\"]==400}">
+            <h1>Sorry, bad request occurred</h1>
+            <p>
+                <c:out value="${requestScope['javax.servlet.error.exception'].message}"/>
+            </p>
+        </c:if>
     </body>
 </html>
