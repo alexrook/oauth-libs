@@ -1,4 +1,4 @@
-package oul.rest.tools.oauth;
+package oul.web.tools.oauth;
 
 import java.io.IOException;
 import javax.inject.Inject;
@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class SessionFilter implements Filter, IConst {
 
-    private static final boolean debug = true;
+    private static boolean debug = false;
     private static long counter = 0;
 
     private FilterConfig filterConfig = null;
@@ -97,24 +97,14 @@ public class SessionFilter implements Filter, IConst {
     public void init(FilterConfig filterConfig) {
         this.filterConfig = filterConfig;
         if (filterConfig != null) {
+            String isDebug = filterConfig.getInitParameter("debug");
+            if ((isDebug != null) && (!isDebug.equalsIgnoreCase("false"))) {
+                debug = true;
+            }
             if (debug) {
                 log("SessionFilter:Initializing filter");
             }
         }
-    }
-
-    /**
-     * Return a String representation of this object.
-     */
-    @Override
-    public String toString() {
-        if (filterConfig == null) {
-            return ("SessionFilter()");
-        }
-        StringBuilder sb = new StringBuilder("SessionFilter(");
-        sb.append(filterConfig);
-        sb.append(")");
-        return (sb.toString());
     }
 
     public void log(String msg) {

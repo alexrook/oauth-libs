@@ -1,4 +1,4 @@
-package oul.rest.tools.oauth;
+package oul.web.tools.oauth;
 
 import java.io.IOException;
 import javax.servlet.http.Cookie;

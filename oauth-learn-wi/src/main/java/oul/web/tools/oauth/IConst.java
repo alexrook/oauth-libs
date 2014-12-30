@@ -1,4 +1,4 @@
-package oul.rest.tools.oauth;
+package oul.web.tools.oauth;
 
 /**
  * @author moroz
