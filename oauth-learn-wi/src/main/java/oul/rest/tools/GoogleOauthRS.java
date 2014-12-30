@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.NewCookie;
@@ -20,6 +21,7 @@ import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.client.response.OAuthResourceResponse;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.OAuthProviderType;
+import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 
 /**
@@ -85,8 +87,11 @@ public class GoogleOauthRS {
 
             return result;
 
+        } catch (OAuthProblemException ex) {
+            throw new WebApplicationException(Response.status(ex.getResponseStatus()).entity(ex.getMessage()).build());
         } catch (Exception ex) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+            throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(ex.getMessage()).build());
         }
 
     }
