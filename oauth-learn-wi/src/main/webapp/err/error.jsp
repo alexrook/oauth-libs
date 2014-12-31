@@ -18,7 +18,7 @@
             <h1>Unauthorized</h1>
             <c:choose>
 
-                <c:when test="${requestScope['javax.servlet.error.request_uri'].contains('oauth')}">
+                <c:when test="${(requestScope['javax.servlet.error.request_uri'].contains('oauth'))||(requestScope['javax.servlet.error.request_uri'].contains('expbase'))}">
                     <p>
                         Access to this page requires 
                         <a href="<c:url  value='/#/google-oauth'/>">
