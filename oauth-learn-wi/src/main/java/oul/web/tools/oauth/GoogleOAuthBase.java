@@ -1,9 +1,14 @@
 package oul.web.tools.oauth;
 
+import oul.web.tools.oauth.profile.Profile;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
+import javax.inject.Singleton;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;
@@ -16,15 +21,19 @@ import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import oul.rest.tools.GoogleOauthRS;
+import oul.web.tools.oauth.profile.IAuthEntryStorage;
 
 /**
  * @author moroz
  */
+@Singleton
 public class GoogleOAuthBase {
 
     private String propertiesName = "local.properties";
 
-    private IUserStorage userStorage;
+    private IAuthEntryStorage authStorage;
+
+    private final Map<String, String> states = new HashMap<String, String>(15);
 
     public static class AuthLoginInfo {
 
@@ -49,13 +58,16 @@ public class GoogleOAuthBase {
 
         String location = request.getLocationUri();
 
-        UUID uuid = UUID.randomUUID();//todo: move uuid&state to temporary storage
+        UUID uuid = UUID.randomUUID();
+
+        states.put(sessionId, uuid.toString());
 
         return new AuthLoginInfo(URI.create(location), uuid.toString());
 
     }
 
-    public Profile callback(String code, String state) throws IOException, OAuthSystemException, OAuthProblemException {
+    public Profile.AuthzEntry callback(String code, String sessionId,
+            String state) throws IOException, OAuthSystemException, OAuthProblemException {
 
         OAuthClientRequest oautrequest = OAuthClientRequest
                 .tokenProvider(OAuthProviderType.GOOGLE)
@@ -66,19 +78,30 @@ public class GoogleOAuthBase {
                 .setCode(code)
                 .buildBodyMessage();
 
-        OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
+        String rstate = states.get(sessionId);
 
-        OAuthJSONAccessTokenResponse oAuthResponse = oAuthClient.accessToken(oautrequest);
+        if ((rstate != null) && (rstate.equals(state))) {
+            OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
 
-        Profile ret = queryProfile(oAuthResponse);
+            OAuthJSONAccessTokenResponse oAuthResponse = oAuthClient.accessToken(oautrequest);
 
-        userStorage.register(ret);
+            Profile profile = queryProfile(oAuthResponse);
 
-        return queryProfile(oAuthResponse);
+            Profile.AuthzEntry ret = authStorage.register(
+                    new Profile.AuthzEntry(new Date(), profile.getId(),
+                            sessionId, oAuthResponse.getAccessToken()),
+                    profile);
+
+            return ret;
+        } else {
+            throw new OAuthSystemException("unregistered state");
+        }
 
     }
 
-    public Profile queryProfile(OAuthJSONAccessTokenResponse oAuthResponse) throws IOException, OAuthSystemException, OAuthProblemException {
+    public Profile queryProfile(OAuthJSONAccessTokenResponse oAuthResponse) throws
+            IOException, OAuthSystemException, OAuthProblemException {
+
         OAuthClientRequest bearerClientRequest
                 = new OAuthBearerClientRequest(getGoogleApiProfileURI())
                 .setAccessToken(oAuthResponse.getAccessToken()).buildQueryMessage();
@@ -91,10 +114,13 @@ public class GoogleOAuthBase {
 
         if (resourceResponse.getResponseCode() == 200) {
 
-            userStorage.register(null);//todo
-        }
+            Profile ret = new Profile(resourceResponse.getBody());
 
-        return null; //todo
+            return ret;
+
+        } else {
+            throw new IOException("could not create profile");
+        }
 
     }
 
@@ -106,12 +132,12 @@ public class GoogleOAuthBase {
         this.propertiesName = propertiesName;
     }
 
-    public IUserStorage getUserStorage() {
-        return userStorage;
+    public IAuthEntryStorage getAuthStorage() {
+        return authStorage;
     }
 
-    public void setUserStorage(IUserStorage userStorage) {
-        this.userStorage = userStorage;
+    public void setAuthStorage(IAuthEntryStorage authStorage) {
+        this.authStorage = authStorage;
     }
 
     private Properties getLocalProperties() throws IOException {

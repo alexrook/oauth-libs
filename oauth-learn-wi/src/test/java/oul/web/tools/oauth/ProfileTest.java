@@ -1,5 +1,6 @@
 package oul.web.tools.oauth;
 
+import oul.web.tools.oauth.profile.Profile;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;

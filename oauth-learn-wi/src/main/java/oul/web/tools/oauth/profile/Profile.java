@@ -1,10 +1,13 @@
-package oul.web.tools.oauth;
+package oul.web.tools.oauth.profile;
+
+
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -17,9 +20,28 @@ import javax.json.JsonValue;
  *
  * User profile mainly based on get https://www.googleapis.com/plus/v1/people/me
  *
- * see src/test/resources/example-google-apps-user.json & example-non-google-apps-user.json
+ * see src/test/resources/example-google-apps-user.json &
+ * example-non-google-apps-user.json
  */
 public class Profile {
+
+    //profile metadata
+    public static class AuthzEntry {
+
+        public Date dateReg;
+        public int ttl = 3600;
+        public String sessionId, accessToken, profileId;
+
+        public AuthzEntry(Date dateReg,
+              String profileId,
+                String sessionID,
+                String accessToken) {
+            this.dateReg = dateReg;
+            this.sessionId = sessionID;
+            this.profileId = profileId;
+            this.accessToken = accessToken;
+        }
+    }
 
     public static class Name {
 

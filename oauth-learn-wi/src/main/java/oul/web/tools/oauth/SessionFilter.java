@@ -11,6 +11,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import oul.web.tools.oauth.profile.IAuthEntryStorage;
 
 /**
  * @author moroz
@@ -23,7 +24,7 @@ public class SessionFilter implements Filter, IConst {
     private FilterConfig filterConfig = null;
 
     @Inject
-    private IUserStorageEx storage;
+    private IAuthEntryStorage storage;
 
     public SessionFilter() {
     }
@@ -40,7 +41,7 @@ public class SessionFilter implements Filter, IConst {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equalsIgnoreCase(AUTH_COOKIE_NAME)) {
-                    if (storage.check(cookie)) {
+                    if (storage.check(cookie.getValue())) {
                         return true;
                     }
                 }
@@ -73,9 +74,9 @@ public class SessionFilter implements Filter, IConst {
 
         boolean before = doBeforeProcessing(httpReq, httpRes);
 
-        if (before) {
-            chain.doFilter(request, response);
-        }
+        // if (before) {
+        chain.doFilter(request, response);
+        // }
 
         doAfterProcessing(httpReq, httpRes);
 

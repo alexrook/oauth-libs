@@ -1,11 +1,13 @@
-package oul.web.tools.oauth;
+package oul.web.tools.oauth.profile;
+
+
 
 import java.io.IOException;
 
 /**
  * @author moroz
  */
-public interface IUserStorage {
+public interface IProfileStorage {
 
     boolean check(String id) throws IOException;
 
