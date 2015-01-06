@@ -46,7 +46,7 @@ angular.module('oulApp.controllers', [])
 
                     var req = {
                         method: 'GET',
-                        url: 'rest/proxy',
+                        url: 'oauth/proxy',
                         params: {
                             uri: 'https://google.com/accounts/AuthSubSessionToken'
                         },
@@ -76,7 +76,7 @@ angular.module('oulApp.controllers', [])
 
                     var req = {
                         method: 'GET',
-                        url: 'rest/proxy',
+                        url: 'oauth/proxy',
                         params: {
                             uri: 'https://google.com/accounts/AuthSubTokenInfo'
                         },
@@ -151,7 +151,7 @@ angular.module('oulApp.controllers', [])
 
                 $scope.profileInfoProxy = function () {
                     $http
-                            .get('rest/ggl/profile')
+                            .get('oauth/google/profile')
                             .success(function (data) {
                                 $scope.state = $scope.STATES.THREE;
                                 $scope.profile = data;
@@ -169,7 +169,7 @@ angular.module('oulApp.controllers', [])
                 $scope.clearSession = function () {
 
                     $http
-                            .get('rest/ggl/revoke')
+                            .get('oauth/google/logout')
                             .success(function () {
                                 delete $cookies['accessToken'];
                                 delete $cookies['expiresIn'];

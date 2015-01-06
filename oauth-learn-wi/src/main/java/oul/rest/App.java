@@ -6,7 +6,7 @@ import javax.ws.rs.core.Application;
 /**
  * @author moroz
  */
-@ApplicationPath("/rest")
+@ApplicationPath("/oauth")
 public class App extends Application {
 
 

@@ -25,11 +25,11 @@ import org.apache.oltu.oauth2.common.message.types.GrantType;
 /**
  * @author moroz
  */
-@Path("/ggl")
+@Path("/google")
 public class GoogleOauthRS {
 
     @GET
-    @Path("first")
+    @Path("login")
     public Response firstPhase() {
         try {
 
@@ -121,7 +121,7 @@ public class GoogleOauthRS {
     }
 
     @GET
-    @Path("revoke")
+    @Path("logout")
     public Response signOut(@CookieParam("accessToken") Cookie accessToken,
             @CookieParam("expiresIn") Cookie expiresIn) {
 
