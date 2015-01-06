@@ -70,7 +70,7 @@ public class ProfileTest {
                 buf = sr.readLine();
             }
 
-            System.out.print("load file "+f.getName());
+            System.out.print("load file " + f.getName());
 
             Profile profile = new Profile(buldr.toString());
             assertNotNull(profile);
@@ -82,4 +82,6 @@ public class ProfileTest {
 
         }
     }
+
+ 
 }

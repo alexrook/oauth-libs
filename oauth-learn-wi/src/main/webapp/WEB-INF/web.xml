@@ -38,6 +38,7 @@
     <servlet-mapping>
         <servlet-name>GoogleOAuthServlet</servlet-name>
         <url-pattern>/oauth/google/login</url-pattern>
+         <url-pattern>/oauth/google/logout</url-pattern>
         <url-pattern>/oauth/google/callback</url-pattern>
         <url-pattern>/oauth/google/profile</url-pattern>
     </servlet-mapping>

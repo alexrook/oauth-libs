@@ -9,10 +9,12 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 import javax.inject.Singleton;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
+import org.apache.oltu.oauth2.client.response.OAuthAuthzResponse;
 import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.client.response.OAuthResourceResponse;
 import org.apache.oltu.oauth2.common.OAuth;
@@ -49,8 +51,8 @@ public class GoogleOAuthBase {
     public AuthLoginInfo getLoginInfo(String sessionId) throws IOException, OAuthSystemException {
 
         UUID uuid = UUID.randomUUID();
+        String state = uuid.toString().replaceAll("-", "");
 
-        String state = uuid.toString();
         states.put(sessionId, state);
 
         OAuthClientRequest request = OAuthClientRequest
@@ -68,8 +70,13 @@ public class GoogleOAuthBase {
 
     }
 
-    public Profile.AuthzEntry callback(String code, String sessionId,
-            String state) throws IOException, OAuthSystemException, OAuthProblemException {
+    public Profile.AuthzEntry callback(HttpServletRequest request, String sessionId) 
+            throws IOException, OAuthSystemException, OAuthProblemException {
+
+        OAuthAuthzResponse oar = OAuthAuthzResponse.oauthCodeAuthzResponse(request);
+
+        String code = oar.getCode(),
+                state = oar.getState();
 
         OAuthClientRequest oautrequest = OAuthClientRequest
                 .tokenProvider(OAuthProviderType.GOOGLE)
@@ -93,6 +100,8 @@ public class GoogleOAuthBase {
                     new Profile.AuthzEntry(new Date(), profile.getId(),
                             sessionId, oAuthResponse.getAccessToken()),
                     profile);
+           
+            states.remove(sessionId);//remove state after succesfully getting profile
 
             return ret;
         } else {

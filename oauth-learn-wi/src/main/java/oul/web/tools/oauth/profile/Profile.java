@@ -1,12 +1,11 @@
 package oul.web.tools.oauth.profile;
 
-
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import javax.json.Json;
@@ -33,7 +32,7 @@ public class Profile {
         public String sessionId, accessToken, profileId;
 
         public AuthzEntry(Date dateReg,
-              String profileId,
+                String profileId,
                 String sessionID,
                 String accessToken) {
             this.dateReg = dateReg;
@@ -54,6 +53,17 @@ public class Profile {
             this.firstName = firstName;
             this.lastName = lastName;
             this.displayName = displayName;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder ret = new StringBuilder("Name [");
+            ret.append("firstName=").append(firstName).append(",")
+                    .append("lastName=").append(lastName).append(",")
+                    .append("displayName").append("displayName")
+                    .append("]");
+
+            return ret.toString();
         }
 
         public String getFirstName() {
@@ -146,6 +156,21 @@ public class Profile {
         } catch (Exception e) {
             return "";
         }
+    }
+
+    @Override
+    public String toString() {
+
+        StringBuilder ret = new StringBuilder("Profile [");
+
+        ret.append("id=").append(id).append(",")
+                .append("domain=").append(domain).append(",")
+                .append(name.toString()).append(",")
+                .append(Arrays.toString(emails.toArray()))
+                .append("]");
+
+        return ret.toString();
+
     }
 
     public String getId() {
