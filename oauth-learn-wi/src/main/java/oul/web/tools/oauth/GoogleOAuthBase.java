@@ -20,7 +20,7 @@ import org.apache.oltu.oauth2.common.OAuthProviderType;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
-import oul.rest.tools.GoogleOauthRS;
+
 import oul.web.tools.oauth.profile.IAuthEntryStorage;
 
 /**
@@ -48,19 +48,21 @@ public class GoogleOAuthBase {
 
     public AuthLoginInfo getLoginInfo(String sessionId) throws IOException, OAuthSystemException {
 
+        UUID uuid = UUID.randomUUID();
+
+        String state = uuid.toString();
+        states.put(sessionId, state);
+
         OAuthClientRequest request = OAuthClientRequest
                 .authorizationProvider(OAuthProviderType.GOOGLE)
                 .setClientId(getGoogleClientId())
                 .setScope(getGoogleClientScope())
                 .setRedirectURI(getGoogleClientRedirectURI())
                 .setResponseType(getGoogleClientResponseType())
+                .setState(state)
                 .buildQueryMessage();
 
         String location = request.getLocationUri();
-
-        UUID uuid = UUID.randomUUID();
-
-        states.put(sessionId, uuid.toString());
 
         return new AuthLoginInfo(URI.create(location), uuid.toString());
 
@@ -119,9 +121,13 @@ public class GoogleOAuthBase {
             return ret;
 
         } else {
-            throw new IOException("could not create profile");
+            throw new IOException("could not query profile");
         }
 
+    }
+
+    public boolean unregister(String sessionId) throws IOException {
+        return authStorage.unregister(sessionId);
     }
 
     public String getPropertiesName() {
@@ -142,7 +148,7 @@ public class GoogleOAuthBase {
 
     private Properties getLocalProperties() throws IOException {
         Properties res = new Properties();
-        res.load(GoogleOauthRS.class.getClassLoader().getResourceAsStream(getPropertiesName()));
+        res.load(GoogleOAuthBase.class.getClassLoader().getResourceAsStream(getPropertiesName()));
         return res;
     }
 

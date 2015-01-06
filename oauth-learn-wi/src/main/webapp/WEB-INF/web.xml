@@ -18,6 +18,10 @@
     <servlet>
         <servlet-name>ForwardExpBaseServlet</servlet-name>
         <servlet-class>oul.exp.ForwardExpBaseServlet</servlet-class>
+        <init-param>
+            <param-name>success-redirect-uri</param-name>
+            <param-value>/</param-value>
+        </init-param>
     </servlet>
     <servlet>
         <servlet-name>GoogleOAuthServlet</servlet-name>
@@ -33,8 +37,9 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>GoogleOAuthServlet</servlet-name>
-        <url-pattern>/oauth/google/callback</url-pattern>
         <url-pattern>/oauth/google/login</url-pattern>
+        <url-pattern>/oauth/google/callback</url-pattern>
+        <url-pattern>/oauth/google/profile</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
@@ -45,6 +50,10 @@
     </error-page>
     <error-page>
         <error-code>400</error-code>
+        <location>/err/error.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>404</error-code>
         <location>/err/error.jsp</location>
     </error-page>
     <security-constraint>

@@ -12,7 +12,7 @@
     <body>
         <%
             //http://docs.oracle.com/javaee/6/api/constant-values.html
-        %>
+%>
         <c:if test="${requestScope['javax.servlet.error.status_code']==401}">
 
             <h1>Unauthorized</h1>
@@ -43,6 +43,18 @@
             <h1>Sorry, bad request occurred</h1>
             <p>
                 <c:out value="${requestScope['javax.servlet.error.exception'].message}"/>
+            </p>
+        </c:if>
+
+        <c:if test="${requestScope['javax.servlet.error.status_code']==404}">
+            <h1>Sorry, the requested resource is unknown</h1>
+            <p>
+                <c:out value="${requestScope['javax.servlet.error.exception'].message}"/>
+            </p>
+            <p> 
+                <a href="<c:url  value='/'/>">
+                    Go to start page
+                </a>
             </p>
         </c:if>
 
