@@ -1,11 +1,5 @@
 package oul.web.tools.oauth.profile.impl;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 
 import oul.web.tools.oauth.profile.Profile;
 import java.io.IOException;
