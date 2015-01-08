@@ -21,13 +21,20 @@ body {
 }
 
 .menu p{
-    margin-bottom: 0px;
+    margin-bottom: 3px;
     margin-top: 0px;
 }
 
 .menu ul{
     margin-top: 0px;
 }
+
+.location-info span {
+    font-size: small;
+    font-family: monospace;
+    font-weight: lighter;
+    color: #f8bb00;
+ }
 
 [data-ng-view]{
 
