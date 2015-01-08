@@ -96,7 +96,7 @@ public class GoogleOAuthServlet extends HttpServlet implements IConst {
             Cookie authCookie = new Cookie(AUTH_COOKIE_NAME, authEntry.sessionId);
             authCookie.setMaxAge(authEntry.ttl - 1);
             authCookie.setPath("/");
-            
+
             response.addCookie(authCookie);
             response.sendRedirect(successRedirectURI);
 
@@ -119,8 +119,8 @@ public class GoogleOAuthServlet extends HttpServlet implements IConst {
 
         Profile profile = profileSorage.get(session.getId());
 
-        response.setContentType("text/plain");
-        response.getWriter().write("\ndoProfile:\n " + profile.toString());
+        response.setContentType("application/json");
+        response.getWriter().write(profile.toJsonString());
     }
 
     private void doLogout(HttpServletRequest request, HttpServletResponse response)

@@ -2,6 +2,7 @@ package oul.web.tools.oauth.profile;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -10,9 +11,11 @@ import java.util.Date;
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
+import javax.json.JsonWriter;
 
 /**
  * @author moroz
@@ -64,6 +67,28 @@ public class Profile {
                     .append("]");
 
             return ret.toString();
+        }
+
+        public JsonObject toJsonObject() {
+
+            JsonObject ret = Json.createObjectBuilder()
+                    .add("firstName", firstName)
+                    .add("lastName", lastName)
+                    .add("displayName", displayName)
+                    .build();
+
+            return ret;
+        }
+
+        public String toJsonString() {
+            StringWriter sw = new StringWriter(93);//~calc 
+
+            JsonWriter jsw = Json.createWriter(sw);
+
+            jsw.writeObject(toJsonObject());
+
+            return sw.toString();
+
         }
 
         public String getFirstName() {
@@ -156,6 +181,37 @@ public class Profile {
         } catch (Exception e) {
             return "";
         }
+    }
+
+    public String toJsonString() {
+
+        StringWriter sw = new StringWriter(700);//~calc 
+
+        JsonWriter jsw = Json.createWriter(sw);
+
+        jsw.writeObject(toJsonObject());
+
+        return sw.toString();
+    }
+
+    public JsonObject toJsonObject() {
+
+        JsonArrayBuilder emailsBuilder = Json.createArrayBuilder();
+
+        for (URI uri : getEmails()) {
+            emailsBuilder.add(uri.toString());
+        }
+
+        JsonObject ret = Json.createObjectBuilder()
+                .add("id", id)
+                .add("domain", domain)
+                .add("imgUri", imgURI.toString())
+                .add("emails", emailsBuilder)
+                .add("name", name.toJsonObject())
+                .build();
+
+        return ret;
+
     }
 
     @Override
