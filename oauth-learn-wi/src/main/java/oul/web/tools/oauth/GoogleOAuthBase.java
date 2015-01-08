@@ -70,7 +70,7 @@ public class GoogleOAuthBase {
 
     }
 
-    public Profile.AuthzEntry callback(HttpServletRequest request, String sessionId) 
+    public Profile.AuthzEntry callback(HttpServletRequest request, String sessionId)
             throws IOException, OAuthSystemException, OAuthProblemException {
 
         OAuthAuthzResponse oar = OAuthAuthzResponse.oauthCodeAuthzResponse(request);
@@ -100,7 +100,7 @@ public class GoogleOAuthBase {
                     new Profile.AuthzEntry(new Date(), profile.getId(),
                             sessionId, oAuthResponse.getAccessToken()),
                     profile);
-           
+
             states.remove(sessionId);//remove state after succesfully getting profile
 
             return ret;
@@ -136,7 +136,30 @@ public class GoogleOAuthBase {
     }
 
     public boolean unregister(String sessionId) throws IOException {
-        return authStorage.unregister(sessionId);
+
+        try {
+
+            Profile.AuthzEntry authzEntry = authStorage.get(sessionId);
+
+            OAuthClientRequest request = OAuthClientRequest
+                    .authorizationLocation(getGoogleClientRevokeURI())
+                    .setParameter("token", authzEntry.accessToken)
+                    .buildQueryMessage();
+            OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
+            OAuthResourceResponse resourceResponse = oAuthClient
+                    .resource(request,
+                            OAuth.HttpMethod.GET, OAuthResourceResponse.class);
+
+            if (resourceResponse.getResponseCode() == 200) {
+                return authStorage.unregister(sessionId);
+            } else {
+                throw new IOException(resourceResponse.getBody());
+            }
+
+        } catch (Exception ex) {
+            throw new IOException("could not unregister profile for sessionId=" + sessionId, ex);
+        }
+
     }
 
     public String getPropertiesName() {

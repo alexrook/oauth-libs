@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,7 +19,7 @@ import oul.web.tools.oauth.profile.Profile;
 /**
  * @author moroz
  */
-public class GoogleOAuthServlet extends HttpServlet {
+public class GoogleOAuthServlet extends HttpServlet implements IConst {
 
     @Inject
     GoogleOAuthBase googleOAuthBase;
@@ -89,8 +90,14 @@ public class GoogleOAuthServlet extends HttpServlet {
         }
 
         try {
-            googleOAuthBase.callback(request, session.getId());
 
+            Profile.AuthzEntry authEntry = googleOAuthBase.callback(request, session.getId());
+
+            Cookie authCookie = new Cookie(AUTH_COOKIE_NAME, authEntry.sessionId);
+            authCookie.setMaxAge(authEntry.ttl - 1);
+            authCookie.setPath("/");
+            
+            response.addCookie(authCookie);
             response.sendRedirect(successRedirectURI);
 
         } catch (OAuthSystemException ex) {
