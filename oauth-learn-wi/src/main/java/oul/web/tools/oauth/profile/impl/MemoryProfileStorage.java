@@ -1,6 +1,5 @@
 package oul.web.tools.oauth.profile.impl;
 
-
 import oul.web.tools.oauth.profile.Profile;
 import java.io.IOException;
 import java.util.HashMap;
@@ -24,12 +23,13 @@ public class MemoryProfileStorage implements IProfileStorage {
 
     @Override
     public String register(Profile profile) throws IOException {
-        return storage.put(profile.getId(), profile).getId();
+        storage.put(profile.getId(), profile);
+        return profile.getId();
     }
 
     @Override
     public Profile get(String id) throws IOException {
-      
+
         Profile ret = storage.get(id);
 
         if (ret != null) {

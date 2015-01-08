@@ -117,9 +117,10 @@ public class GoogleOAuthServlet extends HttpServlet implements IConst {
             throw new ServletException("illegal state while get profile");
         }
 
-        Profile profile = profileSorage.get(session.getId());
+        Profile profile = authStorage.getProfile(session.getId());
 
         response.setContentType("application/json");
+        response.setCharacterEncoding("utf-8");
         response.getWriter().write(profile.toJsonString());
     }
 
@@ -134,6 +135,13 @@ public class GoogleOAuthServlet extends HttpServlet implements IConst {
 
         googleOAuthBase.unregister(session.getId());
 
+        Cookie authId = new Cookie(AUTH_COOKIE_NAME, "");
+        authId.setPath("/");
+        authId.setMaxAge(0);
+
+        response.addCookie(authId);
+        response.setStatus(200);
+
     }
 
     @Override
@@ -146,6 +154,10 @@ public class GoogleOAuthServlet extends HttpServlet implements IConst {
 
         if ((successRedirectURI == null) || (successRedirectURI.isEmpty())) {
             throw new ServletException("misconfigured servlet");
+        }
+
+        if (!successRedirectURI.toLowerCase().startsWith("http")) {
+            successRedirectURI = config.getServletContext().getContextPath()+"/"+successRedirectURI;
         }
 
     }

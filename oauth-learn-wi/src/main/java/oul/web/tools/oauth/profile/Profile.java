@@ -63,7 +63,7 @@ public class Profile {
             StringBuilder ret = new StringBuilder("Name [");
             ret.append("firstName=").append(firstName).append(",")
                     .append("lastName=").append(lastName).append(",")
-                    .append("displayName").append("displayName")
+                    .append("displayName").append(displayName)
                     .append("]");
 
             return ret.toString();
@@ -222,7 +222,7 @@ public class Profile {
         ret.append("id=").append(id).append(",")
                 .append("domain=").append(domain).append(",")
                 .append(name.toString()).append(",")
-                .append(Arrays.toString(emails.toArray()))
+                .append("Emails ").append(Arrays.toString(emails.toArray()))
                 .append("]");
 
         return ret.toString();

@@ -17,82 +17,85 @@ import oul.web.tools.oauth.profile.Profile.AuthzEntry;
  */
 @Singleton
 public class MemoryAuthEntryStorage implements IAuthEntryStorage, IConst {
-    
-    private final Map<String, Profile.AuthzEntry> entryStorage
+
+    private final Map<String, Profile.AuthzEntry> entrys
             = new TreeMap<String, Profile.AuthzEntry>();
-    
+
     private IProfileStorage profileStorage;
-    
+
     @Override
     public Profile.AuthzEntry register(AuthzEntry entry, Profile profile) throws IOException {
-        
+
         entry.profileId = profileStorage.register(profile);
-        
-        entryStorage.put(entry.sessionId, entry);
-        
+
+        entrys.put(entry.sessionId, entry);
+
         return entry;
     }
-    
+
     @Override
     public Profile getProfile(String sessionId) throws IOException {
-        
+
         AuthzEntry entr = get(sessionId);
-        
+
         Profile ret = profileStorage.get(entr.profileId);
-        
-        if (ret == null) {
-            throw new IOException("could not find profile");
-        }
-        
+
         return ret;
-        
+
     }
-    
+
     @Override
     public AuthzEntry get(String sessionId) throws IOException {
-        
-        AuthzEntry ret = entryStorage.get(sessionId);
+
+        AuthzEntry ret = entrys.get(sessionId);
+
         if (ret == null) {
-            throw new IOException("could not find profile");
+            throw new IOException("could not find registered profile");
         }
-        
+
         return ret;
-        
+
     }
-    
+
     @Override
     public boolean check(String sessionId) throws IOException {
-        AuthzEntry buf = entryStorage.get(sessionId);
-        if (buf == null) {
-            return false;
-        }
-        int t = new Date().compareTo(buf.dateReg);
-        if ((t > 0) && (t < buf.ttl)) {
+        AuthzEntry buf = get(sessionId);
+
+        if (check(buf)) {
             return true;
         } else {
             unregister(sessionId);
             return false;
         }
     }
-    
+
+    public boolean check(AuthzEntry entry) {
+        if (entry == null) {
+            return false;
+        }
+        int t = new Date().compareTo(entry.dateReg);
+        return (t > 0) && (t < entry.ttl);
+
+    }
+
     @Override
     public boolean unregister(String sessionId) throws IOException {
-        return (entryStorage.remove(sessionId)) != null;
+        return (entrys.remove(sessionId)) != null;
     }
-    
+
     public static String toHex(byte[] bytes) {
         BigInteger bi = new BigInteger(1, bytes);
         return String.format("%0" + (bytes.length << 1) + "X", bi);
     }
-    
+
     @Override
     public IProfileStorage getProfileStorage() {
         return profileStorage;
     }
-    
+
     @Override
     public void setProfileStorage(IProfileStorage profileStorage) {
         this.profileStorage = profileStorage;
     }
-    
+
 }
