@@ -112,28 +112,19 @@ angular.module('oulApp.controllers', [])
         .controller('GglCtrl', ['$scope', '$http', '$cookies', function ($scope, $http, $cookies) {
 
                 $scope.STATES = {FIRST: 1, SECOND: 2, THREE: 3, FOUR: 4, ERROR: -1};
-                var s = $cookies['accessToken'];
+
+                var authId = $cookies['AUTH_ID'];
+                console.log(authId);
+
+                $scope.state = authId ? $scope.STATES.SECOND : $scope.STATES.FIRST;
 
 
-                console.log($cookies['accessToken']);
-                console.log($cookies['expiresIn']);
+                $scope.autId = authId;
 
-                $scope.state = $cookies['accessToken'] ? $scope.STATES.SECOND : $scope.STATES.FIRST;
-
-
-
-                $scope.accessToken = $cookies['accessToken'];
-                $scope.expiresIn = $cookies['expiresIn'];
-
-
-
-                $scope.profileInfoAjax = function () {
+                $scope.getOnMyServerProfile = function () {
                     var req = {
                         method: 'GET',
-                        url: 'https://www.googleapis.com/plus/v1/people/me',
-                        headers: {
-                            'Authorization': 'Bearer ' + $scope.accessToken
-                        }
+                        url: 'oauth/google/profile'
                     };
                     $http(req)
                             .success(function (data) {
@@ -149,30 +140,12 @@ angular.module('oulApp.controllers', [])
                             });
                 };
 
-                $scope.profileInfoProxy = function () {
-                    $http
-                            .get('oauth/google/profile')
-                            .success(function (data) {
-                                $scope.state = $scope.STATES.THREE;
-                                $scope.profile = data;
-                            })
-                            .error(function (data, status) {
-                                $scope.state = $scope.STATES.ERROR;
-                                $scope.err = {
-                                    data: data,
-                                    status: status
-                                };
-                            });
-                };
-
-
                 $scope.clearSession = function () {
 
                     $http
                             .get('oauth/google/logout')
                             .success(function () {
-                                delete $cookies['accessToken'];
-                                delete $cookies['expiresIn'];
+                                delete $cookies['AUTH_ID'];
                                 $scope.state = $scope.STATES.FIRST;
 
                             })

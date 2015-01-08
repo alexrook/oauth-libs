@@ -5,22 +5,25 @@
 <div id="ats1" data-ng-show="state === STATES.FIRST">
 
     <p>Authorize yourself via Google OAuth</p>
+
     <a href="oauth/google/login">
         First:  Google OAuth initial call
     </a>
 
 </div>
-
-<div id="ats2" data-ng-show="state === STATES.SECOND">
-
-    <p>Found Access Token <span>{{accessToken}}, expires in {{expiresIn}}</span></p>
-    <p>Now we can query profile info via:
+<div id="ats2" data-ng-show="state > STATES.FIRST">
+    
+    <div id="ats21" data-ng-show="state === STATES.SECOND">
+        <p>Found Access Cookie <span>{{authId}}</span></p>
+        <p>Now we can query profile info via:
+            <a href="" data-ng-click="profileInfoAjax()"> Ajax request to own Server</a>
+            <span>Or</span>
+    </div>
+    
+    <p data-ng-show="state >= STATES.SECOND">
+        <a href="" data-ng-click="clearSession()">cleanup session</a>
     </p>
-    <ul>
-        <li><a href="" data-ng-click="profileInfoAjax()">pure Ajax request</a></li>
-        <li><a href="" data-ng-click="profileInfoProxy()">server proxy</a></li>
-    </ul>
-    Or
+    
 </div>
 
 <div id="ats3" data-ng-show="state === STATES.THREE">
@@ -32,10 +35,6 @@
 
 </div>
 
-<p data-ng-show="state >= STATES.SECOND">
-    <a href="" data-ng-click="clearSession()">cleanup session</a>
-</p>
-
 <div id="ats-1" data-ng-show="state === STATES.ERROR">
 
     <p>Some error occured.</p>
@@ -45,4 +44,3 @@
     </pre>
 
 </div>
-
