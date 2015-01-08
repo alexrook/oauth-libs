@@ -5,10 +5,10 @@ body {
 
 .header {
     overflow: hidden;
-   
+
 }
 .location-info {
-   float: right;
+    float: right;
 }
 
 .menu {
@@ -23,6 +23,13 @@ body {
 .menu ul{
     margin-top: 0px;
 }
+
+.location-info span {
+    font-size: small;
+    font-family: monospace;
+    font-weight: lighter;
+    color: #f8bb00;
+ }
 
 [data-ng-view]{
 
