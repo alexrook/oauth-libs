@@ -2,12 +2,12 @@
 
 ### Create file 'local.properties'
 
-To run this project you need create 'local.properties' file
+To run this project on Jboss 7.1.1 you need create 'local.properties' file
 with next data:
 
     google.oauth.clientId=<your-google-app-clientID>
     google.oauth.clientSecret=<your-google-app-clientSedret>
-    google.oauth.redirectUri=http://localhost:8080/oul/rest/ggl/callback
+    google.oauth.redirectUri=http://localhost:8080/oul/oauth/google/callback
     google.oauth.revokeUri=https://accounts.google.com/o/oauth2/revoke
     google.oauth.scope=profile email
     google.oauth.responseType=code
