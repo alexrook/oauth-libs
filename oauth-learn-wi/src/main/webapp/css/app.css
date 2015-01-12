@@ -29,12 +29,19 @@ body {
     margin-top: 0px;
 }
 
-.location-info span {
+.info, .location-info span {
     font-size: small;
     font-family: monospace;
     font-weight: lighter;
     color: #f8bb00;
- }
+}
+
+.state{
+    font-size:larger;
+    font-family: monospace;
+    font-weight: lighter;
+    color: green;
+}
 
 [data-ng-view]{
 

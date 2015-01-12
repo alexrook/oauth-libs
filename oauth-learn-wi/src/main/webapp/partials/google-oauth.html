@@ -1,6 +1,6 @@
 <h2>Google OAuth 2.0</h2>
 
-<p>state: {{state}}</p>
+<p>state:<span class="state">{{state}}</span></p>
 
 <div id="ats1" data-ng-show="state === STATES.FIRST">
 
@@ -11,10 +11,11 @@
     </a>
 
 </div>
+
 <div id="ats2" data-ng-show="state > STATES.FIRST">
 
     <div id="ats21" data-ng-show="state === STATES.SECOND">
-        <p>Found Access Cookie <span>{{authId}}</span></p>
+        <p>Found Access Cookie: <span class="info"> {{authId}}</span></p>
         <p>Now we can query profile info via:
             <a href="" data-ng-click="getOnMyServerProfile()">Ajax request to own Server</a>
 

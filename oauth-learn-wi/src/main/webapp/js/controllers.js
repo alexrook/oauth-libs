@@ -113,14 +113,11 @@ angular.module('oulApp.controllers', [])
 
                 $scope.STATES = {FIRST: 1, SECOND: 2, THREE: 3, FOUR: 4, ERROR: -1};
 
-                var authId = $cookies['AUTH_ID'];
-                console.log(authId);
+                $scope.authId = $cookies['AUTH_ID'];
+                console.log( $scope.authId);
 
-                $scope.state = authId ? $scope.STATES.SECOND : $scope.STATES.FIRST;
-
-
-                $scope.autId = authId;
-
+                $scope.state =  $scope.authId ? $scope.STATES.SECOND : $scope.STATES.FIRST;
+                
                 $scope.getOnMyServerProfile = function () {
                     var req = {
                         method: 'GET',
