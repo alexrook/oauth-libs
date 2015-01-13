@@ -32,14 +32,14 @@ public class Profile {
 
         public Date dateReg;
         public int ttl = 3600;
-        public String sessionId, accessToken, profileId;
+        public String authzId, accessToken, profileId;
 
         public AuthzEntry(Date dateReg,
                 String profileId,
-                String sessionID,
+                String authzId,
                 String accessToken) {
             this.dateReg = dateReg;
-            this.sessionId = sessionID;
+            this.authzId = authzId;
             this.profileId = profileId;
             this.accessToken = accessToken;
         }

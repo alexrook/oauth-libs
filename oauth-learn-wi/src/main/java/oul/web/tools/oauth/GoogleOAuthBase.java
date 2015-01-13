@@ -2,7 +2,6 @@ package oul.web.tools.oauth;
 
 import oul.web.tools.oauth.profile.Profile;
 import java.io.IOException;
-import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,8 +21,10 @@ import org.apache.oltu.oauth2.common.OAuthProviderType;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
+import oul.web.tools.oauth.profile.AuthzEntryNotFoundExceptions;
 
 import oul.web.tools.oauth.profile.IAuthEntryStorage;
+import oul.web.tools.oauth.profile.IAuthzEntryMapper;
 
 /**
  * @author moroz
@@ -35,20 +36,11 @@ public class GoogleOAuthBase {
 
     private IAuthEntryStorage authStorage;
 
+    private IAuthzEntryMapper authzEntryMapper;
+
     private final Map<String, String> states = new HashMap<String, String>(15);
 
-    public static class AuthLoginInfo {
-
-        public URI uri;
-        public String state;
-
-        public AuthLoginInfo(URI uri, String state) {
-            this.uri = uri;
-            this.state = state;
-        }
-    }
-
-    public AuthLoginInfo getLoginInfo(String sessionId) throws IOException, OAuthSystemException {
+    public String getLoginInfo(String sessionId) throws IOException, OAuthSystemException {
 
         UUID uuid = UUID.randomUUID();
         String state = uuid.toString().replaceAll("-", "");
@@ -66,11 +58,11 @@ public class GoogleOAuthBase {
 
         String location = request.getLocationUri();
 
-        return new AuthLoginInfo(URI.create(location), uuid.toString());
+        return location;
 
     }
 
-    public Profile.AuthzEntry callback(HttpServletRequest request, String sessionId)
+    public Profile.AuthzEntry callback(HttpServletRequest request)
             throws IOException, OAuthSystemException, OAuthProblemException {
 
         OAuthAuthzResponse oar = OAuthAuthzResponse.oauthCodeAuthzResponse(request);
@@ -78,18 +70,21 @@ public class GoogleOAuthBase {
         String code = oar.getCode(),
                 state = oar.getState();
 
-        OAuthClientRequest oautrequest = OAuthClientRequest
-                .tokenProvider(OAuthProviderType.GOOGLE)
-                .setGrantType(GrantType.AUTHORIZATION_CODE)
-                .setClientId(getGoogleClientId())
-                .setClientSecret(getGoogleClientSecret())
-                .setRedirectURI(getGoogleClientRedirectURI())
-                .setCode(code)
-                .buildBodyMessage();
+        String sessionId = request.getSession(false).getId();
 
         String rstate = states.get(sessionId);
 
         if ((rstate != null) && (rstate.equals(state))) {
+
+            OAuthClientRequest oautrequest = OAuthClientRequest
+                    .tokenProvider(OAuthProviderType.GOOGLE)
+                    .setGrantType(GrantType.AUTHORIZATION_CODE)
+                    .setClientId(getGoogleClientId())
+                    .setClientSecret(getGoogleClientSecret())
+                    .setRedirectURI(getGoogleClientRedirectURI())
+                    .setCode(code)
+                    .buildBodyMessage();
+
             OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
 
             OAuthJSONAccessTokenResponse oAuthResponse = oAuthClient.accessToken(oautrequest);
@@ -98,7 +93,7 @@ public class GoogleOAuthBase {
 
             Profile.AuthzEntry ret = authStorage.register(
                     new Profile.AuthzEntry(new Date(), profile.getId(),
-                            sessionId, oAuthResponse.getAccessToken()),
+                            authzEntryMapper.generateAuthzId(request), oAuthResponse.getAccessToken()),
                     profile);
 
             states.remove(sessionId);//remove state after succesfully getting profile
@@ -135,29 +130,37 @@ public class GoogleOAuthBase {
 
     }
 
-    public boolean unregister(String sessionId) throws IOException {
+    public boolean unregister(String authzEntryId) throws IOException {
 
         try {
 
-            Profile.AuthzEntry authzEntry = authStorage.get(sessionId);
+            Profile.AuthzEntry authzEntry = authStorage.get(authzEntryId);
 
             OAuthClientRequest request = OAuthClientRequest
                     .authorizationLocation(getGoogleClientRevokeURI())
                     .setParameter("token", authzEntry.accessToken)
                     .buildQueryMessage();
+
             OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
+
             OAuthResourceResponse resourceResponse = oAuthClient
                     .resource(request,
                             OAuth.HttpMethod.GET, OAuthResourceResponse.class);
 
             if (resourceResponse.getResponseCode() == 200) {
-                return authStorage.unregister(sessionId);
+                return authStorage.unregister(authzEntryId);
             } else {
                 throw new IOException(resourceResponse.getBody());
             }
 
-        } catch (Exception ex) {
-            throw new IOException("could not unregister profile for sessionId=" + sessionId, ex);
+        } catch (IOException ex) {
+            throw new IOException("could not unregister profile for authzEntryId=" + authzEntryId, ex);
+        } catch (AuthzEntryNotFoundExceptions ex) {
+            throw new IOException("could not unregister profile for authzEntryId=" + authzEntryId, ex);
+        } catch (OAuthSystemException ex) {
+            throw new IOException("could not unregister profile for authzEntryId=" + authzEntryId, ex);
+        } catch (OAuthProblemException ex) {
+            throw new IOException("could not unregister profile for authzEntryId=" + authzEntryId, ex);
         }
 
     }
@@ -177,6 +180,16 @@ public class GoogleOAuthBase {
     public void setAuthStorage(IAuthEntryStorage authStorage) {
         this.authStorage = authStorage;
     }
+
+    public IAuthzEntryMapper getAuthzEntryMapper() {
+        return authzEntryMapper;
+    }
+
+    public void setAuthzEntryMapper(IAuthzEntryMapper authzEntryMapper) {
+        this.authzEntryMapper = authzEntryMapper;
+    }
+    
+    
 
     private Properties getLocalProperties() throws IOException {
         Properties res = new Properties();

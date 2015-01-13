@@ -10,13 +10,13 @@ public interface IAuthEntryStorage {
     Profile.AuthzEntry register(Profile.AuthzEntry entry, Profile profile)
             throws IOException;
 
-    Profile.AuthzEntry get(String sessionId) throws IOException;
+    Profile.AuthzEntry get(String authzEntryId) throws IOException,AuthzEntryNotFoundExceptions;
 
-    Profile getProfile(String sessionId) throws IOException;
+    Profile getProfile(String authzEntryId) throws IOException,AuthzEntryNotFoundExceptions;
 
-    boolean check(String sessionId) throws IOException;
+    boolean check(String authzEntryId) throws IOException;
 
-    boolean unregister(String sessionId) throws IOException;
+    boolean unregister(String authzEntryId) throws IOException;
 
     void setProfileStorage(IProfileStorage profileStorage);
 

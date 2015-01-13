@@ -8,15 +8,16 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import oul.web.tools.oauth.profile.AuthzEntryNotFoundExceptions;
 import oul.web.tools.oauth.profile.IAuthEntryStorage;
+import oul.web.tools.oauth.profile.IAuthzEntryMapper;
 
 /**
  * @author moroz
  */
-public class SessionFilter implements Filter, IConst {
+public class SessionFilter implements Filter {
 
     private static boolean debug = false;
     private static long counter = 0;
@@ -26,30 +27,28 @@ public class SessionFilter implements Filter, IConst {
     @Inject
     private IAuthEntryStorage storage;
 
+    @Inject
+    private IAuthzEntryMapper authzEntryMapper;
+
     public SessionFilter() {
     }
 
-    private boolean doBeforeProcessing(HttpServletRequest request, HttpServletResponse response)
+    private void doBeforeProcessing(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
         if (debug) {
             log("SessionFilter:DoBeforeProcessing");
         }
 
-        Cookie[] cookies = request.getCookies();
-
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equalsIgnoreCase(AUTH_COOKIE_NAME)) {
-                    if (storage.check(cookie.getValue())) {
-                        return true;
-                    }
-                }
+        try {
+            String authzEntryId = authzEntryMapper.unmap(request.getCookies());
+            if (!storage.check(authzEntryId)) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unathorized");
             }
-
+        } catch (AuthzEntryNotFoundExceptions ex) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unathorized");
         }
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unathorized");
-        return false;
+     
     }
 
     private void doAfterProcessing(HttpServletRequest request, HttpServletResponse response)
@@ -72,11 +71,9 @@ public class SessionFilter implements Filter, IConst {
         HttpServletRequest httpReq = (HttpServletRequest) request;
         HttpServletResponse httpRes = (HttpServletResponse) response;
 
-        boolean before = doBeforeProcessing(httpReq, httpRes);
-
-        // if (before) {
+        doBeforeProcessing(httpReq, httpRes);
+       
         chain.doFilter(request, response);
-        // }
 
         doAfterProcessing(httpReq, httpRes);
 

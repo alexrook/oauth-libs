@@ -12,14 +12,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
+import oul.web.tools.oauth.profile.AuthzEntryNotFoundExceptions;
 import oul.web.tools.oauth.profile.IAuthEntryStorage;
+import oul.web.tools.oauth.profile.IAuthzEntryMapper;
 import oul.web.tools.oauth.profile.IProfileStorage;
 import oul.web.tools.oauth.profile.Profile;
 
 /**
  * @author moroz
  */
-public class GoogleOAuthServlet extends HttpServlet implements IConst {
+public class GoogleOAuthServlet extends HttpServlet {
 
     @Inject
     GoogleOAuthBase googleOAuthBase;
@@ -29,6 +31,9 @@ public class GoogleOAuthServlet extends HttpServlet implements IConst {
 
     @Inject
     IAuthEntryStorage authStorage;
+
+    @Inject
+    IAuthzEntryMapper authMapper;
 
     /**
      * URI_SUFFIX_xxx strings must be exactly like the ends of the
@@ -67,37 +72,52 @@ public class GoogleOAuthServlet extends HttpServlet implements IConst {
             throws ServletException, IOException {
         HttpSession session = request.getSession(true);
 
-        try {
+        if (isLogIn(request)) {
+            response.sendRedirect(successRedirectURI);
 
-            GoogleOAuthBase.AuthLoginInfo loginInfo = googleOAuthBase.getLoginInfo(session.getId());
-            response.sendRedirect(loginInfo.uri.toString());
+        } else {
+            try {
 
-            /*response.setContentType("text/plain");
-             response.getWriter().write("\ndoLogin: " + loginInfo.uri.toString());*/
-        } catch (OAuthSystemException ex) {
-            throw new IOException("the error occured while request to google", ex);
+                String loginUri = googleOAuthBase.getLoginInfo(session.getId());
+
+                response.sendRedirect(loginUri);
+
+            } catch (OAuthSystemException ex) {
+                throw new IOException("the error occured while request to google", ex);
+            }
         }
 
+    }
+
+    private boolean isLogIn(HttpServletRequest request) {
+        try {
+            String authzId = authMapper.unmap(request.getCookies());
+            return authStorage.check(authzId);
+        } catch (AuthzEntryNotFoundExceptions ex) {
+            return false;
+        } catch (IOException ex) {
+            return false;
+        }
     }
 
     private void doCallback(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-
         if (session == null) {
             throw new ServletException("illegal state while doing callback");
         }
 
         try {
 
-            Profile.AuthzEntry authEntry = googleOAuthBase.callback(request, session.getId());
+            Profile.AuthzEntry authEntry = googleOAuthBase.callback(request);
 
-            Cookie authCookie = new Cookie(AUTH_COOKIE_NAME, authEntry.sessionId);
-            authCookie.setMaxAge(authEntry.ttl - 1);
-            authCookie.setPath("/");
+            Cookie[] authzEntryMapCookies = authMapper.map(authEntry);
 
-            response.addCookie(authCookie);
+            for (Cookie cookie : authzEntryMapCookies) {
+                response.addCookie(cookie);
+            }
+
             response.sendRedirect(successRedirectURI);
 
         } catch (OAuthSystemException ex) {
@@ -111,35 +131,41 @@ public class GoogleOAuthServlet extends HttpServlet implements IConst {
     private void doProfile(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = request.getSession(false);
+        try {
+            String authzEntryId = authMapper.unmap(request.getCookies());
+            Profile profile = authStorage.getProfile(authzEntryId);
 
-        if (session == null) {
-            throw new ServletException("illegal state while get profile");
+            response.setContentType("application/json");
+            response.setCharacterEncoding("utf-8");
+            response.getWriter().write(profile.toJsonString());
+
+        } catch (AuthzEntryNotFoundExceptions ex) {
+
+            Cookie[] delWrongAuthzEntryCookies = authMapper.deleteAuthzEntry();
+
+            for (Cookie cookie : delWrongAuthzEntryCookies) {
+                response.addCookie(cookie);
+            }
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
 
-        Profile profile = authStorage.getProfile(session.getId());
-
-        response.setContentType("application/json");
-        response.setCharacterEncoding("utf-8");
-        response.getWriter().write(profile.toJsonString());
     }
 
     private void doLogout(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = request.getSession(false);
-
-        if (session == null) {
-            throw new ServletException("illegal state while logout");
+        try {
+            googleOAuthBase.unregister(authMapper.unmap(request.getCookies()));
+        } catch (AuthzEntryNotFoundExceptions e) {
+            //do nothing
         }
 
-        googleOAuthBase.unregister(session.getId());
+        Cookie[] delWrongAuthzEntryCookies = authMapper.deleteAuthzEntry();
 
-        Cookie authId = new Cookie(AUTH_COOKIE_NAME, "");
-        authId.setPath("/");
-        authId.setMaxAge(0);
+        for (Cookie cookie : delWrongAuthzEntryCookies) {
+            response.addCookie(cookie);
+        }
 
-        response.addCookie(authId);
         response.setStatus(200);
 
     }
@@ -149,6 +175,7 @@ public class GoogleOAuthServlet extends HttpServlet implements IConst {
 
         authStorage.setProfileStorage(profileSorage);
         googleOAuthBase.setAuthStorage(authStorage);
+        googleOAuthBase.setAuthzEntryMapper(authMapper);
 
         successRedirectURI = config.getInitParameter(PARAM_SUCCESS_REDIRECT_URI);
 
@@ -157,7 +184,7 @@ public class GoogleOAuthServlet extends HttpServlet implements IConst {
         }
 
         if (!successRedirectURI.toLowerCase().startsWith("http")) {
-            successRedirectURI = config.getServletContext().getContextPath()+"/"+successRedirectURI;
+            successRedirectURI = config.getServletContext().getContextPath() + "/" + successRedirectURI;
         }
 
     }
