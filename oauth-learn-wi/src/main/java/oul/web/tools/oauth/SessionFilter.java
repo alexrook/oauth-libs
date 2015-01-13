@@ -10,7 +10,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import oul.web.tools.oauth.profile.AuthzEntryNotFoundExceptions;
+import oul.web.tools.oauth.profile.AuthzEntryNotFoundException;
 import oul.web.tools.oauth.profile.IAuthEntryStorage;
 import oul.web.tools.oauth.profile.IAuthzEntryMapper;
 
@@ -45,7 +45,7 @@ public class SessionFilter implements Filter {
             if (!storage.check(authzEntryId)) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unathorized");
             }
-        } catch (AuthzEntryNotFoundExceptions ex) {
+        } catch (AuthzEntryNotFoundException ex) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unathorized");
         }
      

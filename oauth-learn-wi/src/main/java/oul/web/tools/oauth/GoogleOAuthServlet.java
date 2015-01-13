@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
-import oul.web.tools.oauth.profile.AuthzEntryNotFoundExceptions;
+import oul.web.tools.oauth.profile.AuthzEntryNotFoundException;
 import oul.web.tools.oauth.profile.IAuthEntryStorage;
 import oul.web.tools.oauth.profile.IAuthzEntryMapper;
 import oul.web.tools.oauth.profile.IProfileStorage;
@@ -93,7 +93,7 @@ public class GoogleOAuthServlet extends HttpServlet {
         try {
             String authzId = authMapper.unmap(request.getCookies());
             return authStorage.check(authzId);
-        } catch (AuthzEntryNotFoundExceptions ex) {
+        } catch (AuthzEntryNotFoundException ex) {
             return false;
         } catch (IOException ex) {
             return false;
@@ -139,7 +139,7 @@ public class GoogleOAuthServlet extends HttpServlet {
             response.setCharacterEncoding("utf-8");
             response.getWriter().write(profile.toJsonString());
 
-        } catch (AuthzEntryNotFoundExceptions ex) {
+        } catch (AuthzEntryNotFoundException ex) {
 
             Cookie[] delWrongAuthzEntryCookies = authMapper.deleteAuthzEntry();
 
@@ -156,7 +156,7 @@ public class GoogleOAuthServlet extends HttpServlet {
 
         try {
             googleOAuthBase.unregister(authMapper.unmap(request.getCookies()));
-        } catch (AuthzEntryNotFoundExceptions e) {
+        } catch (AuthzEntryNotFoundException e) {
             //do nothing
         }
 

@@ -4,7 +4,7 @@ import java.io.IOException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import oul.web.tools.oauth.profile.AuthzEntryNotFoundExceptions;
+import oul.web.tools.oauth.profile.AuthzEntryNotFoundException;
 import oul.web.tools.oauth.profile.IAuthzEntryMapper;
 import oul.web.tools.oauth.profile.Profile;
 
@@ -28,16 +28,16 @@ public class SimpleAuthzEntryMapper implements IAuthzEntryMapper {
     }
 
     @Override
-    public String unmap(Cookie[] cookies) throws AuthzEntryNotFoundExceptions {
+    public String unmap(Cookie[] cookies) throws AuthzEntryNotFoundException {
         if (cookies == null) {
-            throw new AuthzEntryNotFoundExceptions("AuthzEntry not found in request");
+            throw new AuthzEntryNotFoundException("AuthzEntry not found in request");
         }
         for (Cookie cookie : cookies) {
             if (cookie.getName().equalsIgnoreCase(AUTH_COOKIE_NAME)) {
                 return cookie.getValue();
             }
         }
-        throw new AuthzEntryNotFoundExceptions("AuthzEntry not found in request");
+        throw new AuthzEntryNotFoundException("AuthzEntry not found in request");
     }
 
     @Override

@@ -29,9 +29,9 @@ public interface IAuthzEntryMapper {
      *
      * @param cookies an request cookies
      * @return auhtzEntry id from request cookies;
-     * @throws AuthzEntryNotFoundExceptions
+     * @throws AuthzEntryNotFoundException
      */
-    String unmap(Cookie[] cookies) throws AuthzEntryNotFoundExceptions;
+    String unmap(Cookie[] cookies) throws AuthzEntryNotFoundException;
 
     /**
      *

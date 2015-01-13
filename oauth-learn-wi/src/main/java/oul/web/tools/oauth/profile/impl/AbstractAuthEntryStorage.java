@@ -2,7 +2,7 @@ package oul.web.tools.oauth.profile.impl;
 
 import java.io.IOException;
 import java.util.Date;
-import oul.web.tools.oauth.profile.AuthzEntryNotFoundExceptions;
+import oul.web.tools.oauth.profile.AuthzEntryNotFoundException;
 import oul.web.tools.oauth.profile.IAuthEntryStorage;
 import oul.web.tools.oauth.profile.Profile;
 
@@ -16,7 +16,7 @@ public abstract class AbstractAuthEntryStorage implements IAuthEntryStorage {
         Profile.AuthzEntry buf;
         try {
             buf = get(authzEntryId);
-        } catch (AuthzEntryNotFoundExceptions ex) {
+        } catch (AuthzEntryNotFoundException ex) {
             return false;
         }
         if (check(buf)) {

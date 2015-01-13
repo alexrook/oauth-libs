@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 import javax.inject.Singleton;
-import oul.web.tools.oauth.profile.AuthzEntryNotFoundExceptions;
+import oul.web.tools.oauth.profile.AuthzEntryNotFoundException;
 import oul.web.tools.oauth.profile.IProfileStorage;
 import oul.web.tools.oauth.profile.Profile.AuthzEntry;
 
@@ -31,7 +31,7 @@ public class MemoryAuthEntryStorage extends AbstractAuthEntryStorage  {
     }
 
     @Override
-    public Profile getProfile(String authzEntryId) throws IOException,AuthzEntryNotFoundExceptions {
+    public Profile getProfile(String authzEntryId) throws IOException,AuthzEntryNotFoundException {
 
         AuthzEntry entr = get(authzEntryId);
 
@@ -42,12 +42,12 @@ public class MemoryAuthEntryStorage extends AbstractAuthEntryStorage  {
     }
 
     @Override
-    public AuthzEntry get(String authzEntryId) throws IOException, AuthzEntryNotFoundExceptions {
+    public AuthzEntry get(String authzEntryId) throws IOException, AuthzEntryNotFoundException {
 
         AuthzEntry ret = entrys.get(authzEntryId);
 
         if (ret == null) {
-            throw new AuthzEntryNotFoundExceptions("could not find AuthzEntry");
+            throw new AuthzEntryNotFoundException("could not find AuthzEntry");
         }
 
         return ret;

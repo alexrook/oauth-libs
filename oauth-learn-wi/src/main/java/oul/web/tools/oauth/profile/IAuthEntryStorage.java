@@ -10,9 +10,9 @@ public interface IAuthEntryStorage {
     Profile.AuthzEntry register(Profile.AuthzEntry entry, Profile profile)
             throws IOException;
 
-    Profile.AuthzEntry get(String authzEntryId) throws IOException,AuthzEntryNotFoundExceptions;
+    Profile.AuthzEntry get(String authzEntryId) throws IOException,AuthzEntryNotFoundException;
 
-    Profile getProfile(String authzEntryId) throws IOException,AuthzEntryNotFoundExceptions;
+    Profile getProfile(String authzEntryId) throws IOException,AuthzEntryNotFoundException;
 
     boolean check(String authzEntryId) throws IOException;
 
