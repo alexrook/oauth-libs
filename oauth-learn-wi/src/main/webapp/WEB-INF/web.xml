@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+        
     <filter>
         <filter-name>SessionFilter</filter-name>
         <filter-class>oul.web.tools.oauth.SessionFilter</filter-class>
@@ -8,6 +12,7 @@
             <param-value>true</param-value>
         </init-param>
     </filter>
+    
     <filter-mapping>
         <filter-name>SessionFilter</filter-name>
         <url-pattern>/restricted/oauth-secret.html</url-pattern>
@@ -15,10 +20,7 @@
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>INCLUDE</dispatcher>
     </filter-mapping>
-    <servlet>
-        <servlet-name>ForwardExpBaseServlet</servlet-name>
-        <servlet-class>oul.exp.ForwardExpBaseServlet</servlet-class>
-    </servlet>
+    
     <servlet>
         <servlet-name>GoogleOAuthServlet</servlet-name>
         <servlet-class>oul.web.tools.oauth.GoogleOAuthServlet</servlet-class>
@@ -31,10 +33,7 @@
             <param-value>#/google-oauth</param-value>
         </init-param>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>ForwardExpBaseServlet</servlet-name>
-        <url-pattern>/expbase</url-pattern>
-    </servlet-mapping>
+    
     <servlet-mapping>
         <servlet-name>GoogleOAuthServlet</servlet-name>
         <url-pattern>/oauth/google/login</url-pattern>
@@ -42,9 +41,11 @@
         <url-pattern>/oauth/google/callback</url-pattern>
         <url-pattern>/oauth/google/profile</url-pattern>
     </servlet-mapping>
+    
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
+    
     <error-page>
         <error-code>401</error-code>
         <location>/err/error.jsp</location>
@@ -57,22 +58,5 @@
         <error-code>404</error-code>
         <location>/err/error.jsp</location>
     </error-page>
-    <security-constraint>
-        <display-name>restricted</display-name>
-        <web-resource-collection>
-            <web-resource-name>restricted</web-resource-name>
-            <description>restricted area</description>
-            <url-pattern>/restricted/secret.html</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>users</role-name>
-        </auth-constraint>
-    </security-constraint>
-    <login-config>
-        <auth-method>DIGEST</auth-method>
-        <realm-name>appdom</realm-name>
-    </login-config>
-    <security-role>
-        <role-name>users</role-name>
-    </security-role>
+    
 </web-app>

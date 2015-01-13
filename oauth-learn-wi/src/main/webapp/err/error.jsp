@@ -12,30 +12,16 @@
     <body>
         <%
             //http://docs.oracle.com/javaee/6/api/constant-values.html
-%>
+        %>
         <c:if test="${requestScope['javax.servlet.error.status_code']==401}">
 
             <h1>Unauthorized</h1>
-            <c:choose>
-
-                <c:when test="${(requestScope['javax.servlet.error.request_uri'].contains('oauth'))||(requestScope['javax.servlet.error.request_uri'].contains('expbase'))}">
-                    <p>
-                        Access to this page requires 
-                        <a href="<c:url  value='/#/google-oauth'/>">
-                            authorization via Google OAuth
-                        </a>
-                    </p>
-                </c:when>
-
-                <c:otherwise>
-                    <p>
-                        Access to this page requires 
-                        <a href="<c:url  value='/#/httpauth'/>">
-                            valid username and password
-                        </a>
-                    </p>
-                </c:otherwise>
-            </c:choose>
+            <p>
+                Access to this page requires 
+                <a href="<c:url  value='/#/google-oauth'/>">
+                    authorization via Google OAuth
+                </a>
+            </p>
 
         </c:if>
 

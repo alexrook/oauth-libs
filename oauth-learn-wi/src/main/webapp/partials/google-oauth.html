@@ -18,11 +18,11 @@
         <p>Found Access Cookie: <span class="info"> {{authId}}</span></p>
         <p>Now we can query profile info via:
             <a href="" data-ng-click="getOnMyServerProfile()">Ajax request to own Server</a>
-
+            <span>Or</span>
+        </p>
     </div>
 
     <p data-ng-show="state >= STATES.SECOND">
-        <span>Or</span>
         <a href="" data-ng-click="clearSession()">cleanup session</a>
     </p>
 

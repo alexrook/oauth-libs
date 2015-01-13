@@ -1,16 +1,12 @@
 'use strict';
 
-// Declare app level module which depends on filters, and services
 angular.module('oulApp', [
     'ngRoute',
     'ngCookies',
     'oulApp.services',
     'oulApp.controllers'
-]).config(['$routeProvider', '$cookiesProvider', function ($routeProvider, $cookiesProvider) {
-        $routeProvider.when('/authsub', {templateUrl: 'partials/authsub.html', controller: 'AuthSubCtrl'});
-        $routeProvider.when('/red', {templateUrl: 'partials/red.html', controller: 'RedCtrl'});
+]).config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/google-oauth', {templateUrl: 'partials/google-oauth.html', controller: 'GglCtrl'});
-        $routeProvider.when('/httpauth', {templateUrl: 'partials/httpauth.html', controller: 'HttpAuthCtrl'});
-        $routeProvider.when('/filter-auth', {templateUrl: 'partials/filterauth.html', controller: 'FilterAuthCtrl'});
-        $routeProvider.otherwise({redirectTo: '/httpauth'});
+        $routeProvider.when('/restricted', {templateUrl: 'partials/restricted.html', controller: 'RestrCtrl'});
+        $routeProvider.otherwise({redirectTo: '/google-oauth'});
     }]);

@@ -24,100 +24,17 @@ function getNativeSearchObj() {
 }
 
 angular.module('oulApp.controllers', [])
-        .controller('HttpAuthCtrl', ['$scope', function ($scope) {
-
-            }])
-        .controller('AuthSubCtrl', ['$scope', '$http', 'shared', function ($scope, $http, shared) {
-
-                $scope.STATES = {FIRST: 1, SECOND: 2, THREE: 3, FOUR: 4, ERROR: -1};
-
-                $scope.state = $scope.STATES.FIRST;
-
-                $scope.shared = shared;
-
-                $scope.authsub = {
-                    slsuToken: (getNativeSearchObj().token ? getNativeSearchObj().token : '')
-                };
-                if ($scope.authsub.slsuToken) {
-                    $scope.state = $scope.STATES.SECOND;
-                }
-
-                $scope.authSub2Call = function () {
-
-                    var req = {
-                        method: 'GET',
-                        url: 'oauth/proxy',
-                        params: {
-                            uri: 'https://google.com/accounts/AuthSubSessionToken'
-                        },
-                        headers: {
-                            'X-Proxy-This': 'Authorization=' + 'AuthSub token=' + $scope.authsub.slsuToken
-                        }
-
-                    };
-
-                    $http(req)
-                            .success(function (data) {
-                                console.log(data);
-                                $scope.authsub.sessionToken = data.split('=')[1];
-                                $scope.state = $scope.STATES.THREE;
-                            })
-                            .error(function (data, status) {
-                                console.log(data);
-                                $scope.err = {
-                                    data: data,
-                                    status: status
-                                };
-                                $scope.state = $scope.STATES.ERROR;
-                            });
-                };
-
-                $scope.authSub3Call = function () {
-
-                    var req = {
-                        method: 'GET',
-                        url: 'oauth/proxy',
-                        params: {
-                            uri: 'https://google.com/accounts/AuthSubTokenInfo'
-                        },
-                        headers: {
-                            'X-Proxy-This': 'Authorization=' + 'AuthSub token=' + $scope.authsub.sessionToken
-                        }
-
-                    };
-
-                    $http(req)
-                            .success(function (data) {
-                                console.log(data);
-                                $scope.tokenInfo = data;
-                                $scope.state = $scope.STATES.FOUR;
-                            })
-                            .error(function (data, status) {
-                                console.log(data);
-                                $scope.err = {
-                                    data: data,
-                                    status: status
-                                };
-                                $scope.state = $scope.STATES.ERROR;
-                            });
-                };
-            }])
-        .controller('RedCtrl', ['$scope', '$http', function ($scope, $http) {
-
-                $scope.getOther = function () {
-                    window.location.href = 'ts/redirected.html';
-                };
-
+        .controller('RestrCtrl', ['$scope', '$http', '$cookies', function ($scope, $http, $cookies) {
             }])
         .controller('GglCtrl', ['$scope', '$http', '$cookies', function ($scope, $http, $cookies) {
 
                 $scope.STATES = {FIRST: 1, SECOND: 2, THREE: 3, FOUR: 4, ERROR: -1};
 
                 $scope.authId = $cookies['AUTH_ID'];
-                console.log( $scope.authId);
+                console.log($scope.authId);
 
-                $scope.state =  $scope.authId ? $scope.STATES.SECOND : $scope.STATES.FIRST;
-                
+                $scope.state = $scope.authId ? $scope.STATES.SECOND : $scope.STATES.FIRST;
+
                 $scope.getOnMyServerProfile = function () {
                     var req = {
                         method: 'GET',
@@ -155,10 +72,6 @@ angular.module('oulApp.controllers', [])
                             });
                 };
 
-            }])
-        .controller('FilterAuthCtrl', ['$scope', '$location', 'shared',
-            function ($scope, $location, shared) {
-                //todo
             }])
         .controller('MainCtrl', ['$scope', '$location', 'shared',
             function ($scope, $location, shared) {
