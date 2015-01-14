@@ -41,14 +41,14 @@ public class SessionFilter implements Filter {
         }
 
         try {
-            String authzEntryId = authzEntryMapper.unmap(request.getCookies());
+            String authzEntryId = authzEntryMapper.unmap(request);
             if (!storage.check(authzEntryId)) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unathorized");
             }
         } catch (AuthzEntryNotFoundException ex) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unathorized");
         }
-     
+
     }
 
     private void doAfterProcessing(HttpServletRequest request, HttpServletResponse response)
@@ -72,7 +72,7 @@ public class SessionFilter implements Filter {
         HttpServletResponse httpRes = (HttpServletResponse) response;
 
         doBeforeProcessing(httpReq, httpRes);
-       
+
         chain.doFilter(request, response);
 
         doAfterProcessing(httpReq, httpRes);

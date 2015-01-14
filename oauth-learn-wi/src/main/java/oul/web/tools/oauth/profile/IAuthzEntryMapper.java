@@ -1,8 +1,8 @@
 package oul.web.tools.oauth.profile;
 
 import java.io.IOException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author moroz
@@ -20,23 +20,26 @@ public interface IAuthzEntryMapper {
     /**
      *
      * @param authzEntry
-     * @return array of cookies for mapping an AuthzEntry
+     * @param response
+     * @return 
      * @throws IOException
      */
-    Cookie[] map(Profile.AuthzEntry authzEntry) throws IOException;
+    HttpServletResponse map(Profile.AuthzEntry authzEntry,HttpServletResponse response) throws IOException;
 
     /**
      *
-     * @param cookies an request cookies
+     * 
+     * @param request
      * @return auhtzEntry id from request cookies;
      * @throws AuthzEntryNotFoundException
      */
-    String unmap(Cookie[] cookies) throws AuthzEntryNotFoundException;
+    String unmap(HttpServletRequest request) throws AuthzEntryNotFoundException;
 
     /**
      *
-     * @return 0-time-live cookies for deleting authEntry
+     * @param response
+     * @return 
      */
-    Cookie[] deleteAuthzEntry();
+    HttpServletResponse deleteAuthzEntry(HttpServletResponse response);
 
 }

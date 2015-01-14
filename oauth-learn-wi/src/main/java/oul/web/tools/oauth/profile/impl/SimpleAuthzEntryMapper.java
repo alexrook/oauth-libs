@@ -3,6 +3,7 @@ package oul.web.tools.oauth.profile.impl;
 import java.io.IOException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import oul.web.tools.oauth.profile.AuthzEntryNotFoundException;
 import oul.web.tools.oauth.profile.IAuthzEntryMapper;
@@ -16,19 +17,20 @@ public class SimpleAuthzEntryMapper implements IAuthzEntryMapper {
     public static String AUTH_COOKIE_NAME = "AUTH_ID";
 
     @Override
-    public Cookie[] map(Profile.AuthzEntry authzEntry) {
+    public HttpServletResponse map(Profile.AuthzEntry authzEntry, HttpServletResponse response) {
 
         Cookie authCookie = new Cookie(AUTH_COOKIE_NAME, authzEntry.authzId);
         authCookie.setMaxAge(authzEntry.ttl - 1);
         authCookie.setPath("/");
 
-        Cookie[] result = {authCookie};
+        response.addCookie(authCookie);
 
-        return result;
+        return response;
     }
 
     @Override
-    public String unmap(Cookie[] cookies) throws AuthzEntryNotFoundException {
+    public String unmap(HttpServletRequest request) throws AuthzEntryNotFoundException {
+        Cookie[] cookies = request.getCookies();
         if (cookies == null) {
             throw new AuthzEntryNotFoundException("AuthzEntry not found in request");
         }
@@ -41,12 +43,15 @@ public class SimpleAuthzEntryMapper implements IAuthzEntryMapper {
     }
 
     @Override
-    public Cookie[] deleteAuthzEntry() {
+    public HttpServletResponse deleteAuthzEntry(HttpServletResponse response) {
+        
         Cookie authCookie = new Cookie(AUTH_COOKIE_NAME, "");
         authCookie.setMaxAge(0);
         authCookie.setPath("/");
-        Cookie[] result = {authCookie};
-        return result;
+        response.addCookie(authCookie);
+        
+        return response;
+        
     }
 
     @Override

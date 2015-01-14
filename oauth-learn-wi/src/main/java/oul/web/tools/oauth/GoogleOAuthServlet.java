@@ -91,7 +91,7 @@ public class GoogleOAuthServlet extends HttpServlet {
 
     private boolean isLogIn(HttpServletRequest request) {
         try {
-            String authzId = authMapper.unmap(request.getCookies());
+            String authzId = authMapper.unmap(request);
             return authStorage.check(authzId);
         } catch (AuthzEntryNotFoundException ex) {
             return false;
@@ -112,11 +112,7 @@ public class GoogleOAuthServlet extends HttpServlet {
 
             Profile.AuthzEntry authEntry = googleOAuthBase.callback(request);
 
-            Cookie[] authzEntryMapCookies = authMapper.map(authEntry);
-
-            for (Cookie cookie : authzEntryMapCookies) {
-                response.addCookie(cookie);
-            }
+            authMapper.map(authEntry, response);
 
             response.sendRedirect(successRedirectURI);
 
@@ -132,7 +128,7 @@ public class GoogleOAuthServlet extends HttpServlet {
             throws ServletException, IOException {
 
         try {
-            String authzEntryId = authMapper.unmap(request.getCookies());
+            String authzEntryId = authMapper.unmap(request);
             Profile profile = authStorage.getProfile(authzEntryId);
 
             response.setContentType("application/json");
@@ -141,11 +137,8 @@ public class GoogleOAuthServlet extends HttpServlet {
 
         } catch (AuthzEntryNotFoundException ex) {
 
-            Cookie[] delWrongAuthzEntryCookies = authMapper.deleteAuthzEntry();
+            authMapper.deleteAuthzEntry(response);
 
-            for (Cookie cookie : delWrongAuthzEntryCookies) {
-                response.addCookie(cookie);
-            }
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
 
@@ -155,16 +148,12 @@ public class GoogleOAuthServlet extends HttpServlet {
             throws ServletException, IOException {
 
         try {
-            googleOAuthBase.unregister(authMapper.unmap(request.getCookies()));
+            googleOAuthBase.unregister(authMapper.unmap(request));
         } catch (AuthzEntryNotFoundException e) {
             //do nothing
         }
 
-        Cookie[] delWrongAuthzEntryCookies = authMapper.deleteAuthzEntry();
-
-        for (Cookie cookie : delWrongAuthzEntryCookies) {
-            response.addCookie(cookie);
-        }
+        authMapper.deleteAuthzEntry(response);
 
         response.setStatus(200);
 
