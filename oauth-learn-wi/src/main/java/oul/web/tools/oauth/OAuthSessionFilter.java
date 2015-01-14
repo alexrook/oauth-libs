@@ -17,7 +17,7 @@ import oul.web.tools.oauth.profile.IAuthzEntryMapper;
 /**
  * @author moroz
  */
-public class SessionFilter implements Filter {
+public class OAuthSessionFilter implements Filter {
 
     private static boolean debug = false;
     private static long counter = 0;
@@ -30,7 +30,7 @@ public class SessionFilter implements Filter {
     @Inject
     private IAuthzEntryMapper authzEntryMapper;
 
-    public SessionFilter() {
+    public OAuthSessionFilter() {
     }
 
     private void doBeforeProcessing(HttpServletRequest request, HttpServletResponse response)
