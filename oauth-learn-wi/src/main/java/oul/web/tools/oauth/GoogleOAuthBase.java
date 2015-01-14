@@ -40,7 +40,7 @@ public class GoogleOAuthBase {
 
     private final Map<String, String> states = new HashMap<String, String>(15);
 
-    public String getLoginInfo(String sessionId) throws IOException, OAuthSystemException {
+    public String getOAuthLoginURI(String sessionId) throws IOException, OAuthSystemException {
 
         UUID uuid = UUID.randomUUID();
         String state = uuid.toString().replaceAll("-", "");

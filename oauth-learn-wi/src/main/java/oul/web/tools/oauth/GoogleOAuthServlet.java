@@ -5,7 +5,6 @@ import javax.inject.Inject;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -77,9 +76,7 @@ public class GoogleOAuthServlet extends HttpServlet {
 
         } else {
             try {
-
-                String loginUri = googleOAuthBase.getLoginInfo(session.getId());
-
+                String loginUri = googleOAuthBase.getOAuthLoginURI(session.getId());
                 response.sendRedirect(loginUri);
 
             } catch (OAuthSystemException ex) {
@@ -138,8 +135,8 @@ public class GoogleOAuthServlet extends HttpServlet {
         } catch (AuthzEntryNotFoundException ex) {
 
             authMapper.deleteAuthzEntry(response);
-
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+       
         }
 
     }

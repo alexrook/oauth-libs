@@ -11,7 +11,7 @@ public interface IAuthzEntryMapper {
 
     /**
      *
-     * @param request
+     * @param request with AuthzEntry
      * @return New AuthzEntry ID based on request information
      * @throws IOException
      */
@@ -21,7 +21,7 @@ public interface IAuthzEntryMapper {
      *
      * @param authzEntry
      * @param response
-     * @return 
+     * @return response with mapped AuthzEntry
      * @throws IOException
      */
     HttpServletResponse map(Profile.AuthzEntry authzEntry,HttpServletResponse response) throws IOException;
@@ -29,7 +29,7 @@ public interface IAuthzEntryMapper {
     /**
      *
      * 
-     * @param request
+     * @param request with AuthzEntry
      * @return auhtzEntry id from request cookies;
      * @throws AuthzEntryNotFoundException
      */
@@ -38,7 +38,7 @@ public interface IAuthzEntryMapper {
     /**
      *
      * @param response
-     * @return 
+     * @return response with deleted mapped AuthzEntry
      */
     HttpServletResponse deleteAuthzEntry(HttpServletResponse response);
 

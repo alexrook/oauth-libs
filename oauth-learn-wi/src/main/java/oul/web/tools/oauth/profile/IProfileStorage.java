@@ -1,7 +1,6 @@
 package oul.web.tools.oauth.profile;
 
 
-
 import java.io.IOException;
 
 /**

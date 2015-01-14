@@ -2,27 +2,18 @@ package oul.web.tools.oauth;
 
 import java.io.IOException;
 import javax.inject.Inject;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import oul.web.tools.oauth.profile.AuthzEntryNotFoundException;
 import oul.web.tools.oauth.profile.IAuthEntryStorage;
 import oul.web.tools.oauth.profile.IAuthzEntryMapper;
+import oul.web.tools.oauth.profile.Profile;
 
 /**
  * @author moroz
  */
-public class OAuthSessionFilter implements Filter {
-
-    private static boolean debug = false;
-    private static long counter = 0;
-
-    private FilterConfig filterConfig = null;
+public class OAuthSessionFilter extends AbstractSessionFilter {
 
     @Inject
     private IAuthEntryStorage storage;
@@ -33,80 +24,27 @@ public class OAuthSessionFilter implements Filter {
     public OAuthSessionFilter() {
     }
 
-    private void doBeforeProcessing(HttpServletRequest request, HttpServletResponse response)
+    @Override
+    protected void doBeforeProcessing(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
-        if (debug) {
-            log("SessionFilter:DoBeforeProcessing");
-        }
+       super.doAfterProcessing(request, response);
 
         try {
             String authzEntryId = authzEntryMapper.unmap(request);
-            if (!storage.check(authzEntryId)) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unathorized");
+            
+            Profile.AuthzEntry authzEntry=storage.get(authzEntryId);
+            
+            if (!storage.check(authzEntry.authzId)) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
             }
+
+            request.setAttribute(AUTHZ_ENTRY_ATTRIBUTE, authzEntry);
+
         } catch (AuthzEntryNotFoundException ex) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unathorized");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
         }
 
-    }
-
-    private void doAfterProcessing(HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException {
-        if (debug) {
-            log("SessionFilter:DoAfterProcessing");
-        }
-
-    }
-
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response,
-            FilterChain chain)
-            throws IOException, ServletException {
-        counter++;
-        if (debug) {
-            log("SessionFilter:doFilter()=" + counter);
-        }
-
-        HttpServletRequest httpReq = (HttpServletRequest) request;
-        HttpServletResponse httpRes = (HttpServletResponse) response;
-
-        doBeforeProcessing(httpReq, httpRes);
-
-        chain.doFilter(request, response);
-
-        doAfterProcessing(httpReq, httpRes);
-
-    }
-
-    public FilterConfig getFilterConfig() {
-        return (this.filterConfig);
-    }
-
-    public void setFilterConfig(FilterConfig filterConfig) {
-        this.filterConfig = filterConfig;
-    }
-
-    @Override
-    public void destroy() {
-    }
-
-    @Override
-    public void init(FilterConfig filterConfig) {
-        this.filterConfig = filterConfig;
-        if (filterConfig != null) {
-            String isDebug = filterConfig.getInitParameter("debug");
-            if ((isDebug != null) && (!isDebug.equalsIgnoreCase("false"))) {
-                debug = true;
-            }
-            if (debug) {
-                log("SessionFilter:Initializing filter");
-            }
-        }
-    }
-
-    public void log(String msg) {
-        filterConfig.getServletContext().log(msg);
     }
 
 }

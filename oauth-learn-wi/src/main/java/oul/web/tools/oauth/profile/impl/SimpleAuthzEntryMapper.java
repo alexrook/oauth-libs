@@ -48,6 +48,7 @@ public class SimpleAuthzEntryMapper implements IAuthzEntryMapper {
         Cookie authCookie = new Cookie(AUTH_COOKIE_NAME, "");
         authCookie.setMaxAge(0);
         authCookie.setPath("/");
+        
         response.addCookie(authCookie);
         
         return response;
