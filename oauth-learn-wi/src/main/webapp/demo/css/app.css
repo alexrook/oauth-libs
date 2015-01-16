@@ -1,0 +1,16 @@
+.signed-in >div {
+    float: left;
+    font-size: small;
+    font-family: monospace;
+    margin: 3px;
+}
+.signed-in img {
+    float: right;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+}
+.signed-in a{
+    display: block;
+}
+
