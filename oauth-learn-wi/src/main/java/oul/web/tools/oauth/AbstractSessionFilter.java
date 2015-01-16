@@ -16,11 +16,13 @@ import javax.servlet.http.HttpServletResponse;
 public abstract class AbstractSessionFilter implements Filter {
 
     public static final String AUTHZ_ENTRY_ATTRIBUTE = "web.tools.oauth.profile.authz_entry",
-            PRIFILE_ATTRIBUTE = "web.tools.oauth.profile";
+            PRIFILE_ATTRIBUTE = "web.tools.oauth.profile",
+            INIT_PARAM_EXCLUDE = "exclude";
 
     private boolean debug = false;
     private long counter = 0;
     private String filterName = "";
+    private String excludeRegex = "";
 
     private FilterConfig filterConfig = null;
 
@@ -56,6 +58,13 @@ public abstract class AbstractSessionFilter implements Filter {
         HttpServletRequest httpReq = (HttpServletRequest) request;
         HttpServletResponse httpRes = (HttpServletResponse) response;
 
+        if ((excludeRegex != null) && (!excludeRegex.isEmpty())) {
+            if (httpReq.getServletPath().toLowerCase().matches(excludeRegex)) {
+                chain.doFilter(request, response);
+                return;
+            }
+        }
+
         doBeforeProcessing(httpReq, httpRes);
 
         chain.doFilter(request, response);
@@ -73,6 +82,7 @@ public abstract class AbstractSessionFilter implements Filter {
                 setDebug(true);
             }
             this.filterName = filterConfig.getFilterName();
+            this.excludeRegex = filterConfig.getInitParameter(INIT_PARAM_EXCLUDE);
         }
 
         if (isDebug()) {

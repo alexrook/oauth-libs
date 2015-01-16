@@ -29,7 +29,7 @@ public class GoogleOAuthServlet extends HttpServlet {
     IProfileStorage profileSorage;
 
     @Inject
-    IAuthEntryStorage authStorage;
+    IAuthEntryStorage authStorage;  
 
     @Inject
     IAuthzEntryMapper authMapper;
@@ -136,7 +136,7 @@ public class GoogleOAuthServlet extends HttpServlet {
 
             authMapper.deleteAuthzEntry(response);
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-       
+
         }
 
     }
