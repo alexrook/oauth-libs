@@ -27,6 +27,11 @@ public class TodoRS {
     @Inject
     TodoStorage storage;
 
+    private interface ICallback {
+
+        Response callback(Profile user);
+    }
+
     @GET
     @Path("all")
     @Produces(MediaType.APPLICATION_JSON)
@@ -38,13 +43,14 @@ public class TodoRS {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTodos(@Context HttpServletRequest request) {
         Profile user = (Profile) request.getAttribute(AbstractSessionFilter.PRIFILE_ATTRIBUTE);
-        if (user != null) {
-            return Response.ok(storage.list(user.getId())).build();
-        } else {
-            return Response.serverError()
-                    .status(Response.Status.UNAUTHORIZED)
-                    .build();
-        }
+        
+        return call(user, new ICallback() {
+
+            @Override
+            public Response callback(Profile user) {
+                return Response.ok(storage.list(user.getId())).build();
+            }
+        });
     }
 
     @GET
@@ -52,17 +58,47 @@ public class TodoRS {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTodo(@Context HttpServletRequest request,
             @PathParam("id") int id) {
-        return Response.ok(storage.list(null)).build();
+        Profile user = (Profile) request.getAttribute(AbstractSessionFilter.PRIFILE_ATTRIBUTE);
+
+        return call(user, new ICallback() {
+
+            @Override
+            public Response callback(Profile user) {
+                return Response.ok(storage.list(user.getId())).build();
+            }
+        });
+
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response putTodo(@Context HttpServletRequest request,
-            @FormParam("content") String content,
-            @FormParam("update") Date update) {
-        return Response.created(
-                URI.create(storage.put(null, content, update))
-        ).build();
+            @FormParam("content") final String content,
+            @FormParam("update") final Date update) {
+        Profile user = (Profile) request.getAttribute(AbstractSessionFilter.PRIFILE_ATTRIBUTE);
+
+        return call(user, new ICallback() {
+
+            @Override
+            public Response callback(Profile user) {
+                String todoID = storage.put(user.getId(), content, update);
+
+                return Response.created(
+                        URI.create(todoID)
+                ).build();
+            }
+        });
+    }
+
+    private Response call(Profile user, ICallback callback) {
+        if (user != null) {
+            return callback.callback(user);
+        } else {
+            return Response.serverError()
+                    .status(Response.Status.UNAUTHORIZED)
+                    .build();
+        }
+
     }
 
 }

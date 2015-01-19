@@ -24,8 +24,8 @@ public class TodoStorage {
     }
 
     public String put(String userId, String content, Date date) {
-        UUID uuid = UUID.randomUUID();
-        Todo todo = new Todo(userId, uuid.toString(), content, date);
+        String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+        Todo todo = new Todo(userId, uuid, content, date);
         return put(todo);
 
     }
