@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html data-ng-app="todoApp">
 
     <head>
         <title>Todo demo with OAuth</title>
@@ -21,7 +21,7 @@
 
     </head>
 
-    <body>
+    <body data-ng-controller="MainCtrl">
         <div class="container">
             <nav class="navbar">
                 <div class="container-fluid">
@@ -31,17 +31,17 @@
                         </div>
                     </div>
                     <div id="user-info" class="navbar-header pull-right">
-                        <div class="logged-in" id="logged-in">
+                        <div data-ng-show="state === STATES.LOGGED" class="logged-in" id="logged-in">
                             <div>
-                                <a class="navbar-link" href="https://plus.google.com/me">user@example.com</a>
+                                <a class="navbar-link" href="https://plus.google.com/me">{{profile.emails[0]}}</a>
                                 <a class="navbar-link" href="" data-ng-click="logout()">Sign out</a>
                             </div>
                             <img class="avatar" alt="user avatar"
-                                 src="//todo">
+                                 src="{{profile.imgUri}}">
                         </div>
-                        <div class="navbar-text" id="log-in">
+                        <div data-ng-show="state === STATES.NOTLOGGED" class="navbar-text" id="log-in">
                             <div>
-                                <a class="navbar-link" href="" data-ng-click="login()">Sign in</a>
+                                <a class="navbar-link" href="../#/google-oauth">Sign in</a>
                             </div>
                         </div>
                     </div>
