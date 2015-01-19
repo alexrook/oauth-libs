@@ -43,6 +43,20 @@
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>INCLUDE</dispatcher>
     </filter-mapping>
+    <filter-mapping>
+        <filter-name>OAuthSessionFilter</filter-name>
+        <url-pattern>/demo/todo/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>OAuthDomainFilter</filter-name>
+        <url-pattern>/demo/todo/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+    </filter-mapping>
     <servlet>
         <servlet-name>GoogleOAuthServlet</servlet-name>
         <servlet-class>oul.web.tools.oauth.GoogleOAuthServlet</servlet-class>

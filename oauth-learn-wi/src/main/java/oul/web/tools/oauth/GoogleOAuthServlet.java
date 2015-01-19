@@ -29,7 +29,7 @@ public class GoogleOAuthServlet extends HttpServlet {
     IProfileStorage profileSorage;
 
     @Inject
-    IAuthEntryStorage authStorage;  
+    IAuthEntryStorage authStorage;
 
     @Inject
     IAuthzEntryMapper authMapper;
@@ -146,13 +146,18 @@ public class GoogleOAuthServlet extends HttpServlet {
 
         try {
             googleOAuthBase.unregister(authMapper.unmap(request));
+            response.setStatus(200);
         } catch (AuthzEntryNotFoundException e) {
-            //do nothing
+            //http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+            response.setStatus(205);//205-Reset Content
+        } finally {
+            HttpSession session = request.getSession(false);
+            authMapper.deleteAuthzEntry(response);
+            if (session != null) {
+                session.invalidate();
+            }
+         
         }
-
-        authMapper.deleteAuthzEntry(response);
-
-        response.setStatus(200);
 
     }
 

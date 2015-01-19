@@ -10,12 +10,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <%
-            //http://docs.oracle.com/javaee/6/api/constant-values.html
-        %>
+        <% //http://docs.oracle.com/javaee/6/api/constant-values.html %>
         <c:if test="${requestScope['javax.servlet.error.status_code']==401}">
 
             <h1>Unauthorized</h1>
+            <p>
+                Server response: <span><c:out 
+                        value="${requestScope['javax.servlet.error.message']}"/></span>
+            </p>
             <p>
                 Access to this page requires 
                 <a href="<c:url  value='/#/google-oauth'/>">

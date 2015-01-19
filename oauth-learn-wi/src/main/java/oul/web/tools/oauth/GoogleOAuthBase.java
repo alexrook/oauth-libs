@@ -130,7 +130,7 @@ public class GoogleOAuthBase {
 
     }
 
-    public boolean unregister(String authzEntryId) throws IOException {
+    public boolean unregister(String authzEntryId) throws IOException, AuthzEntryNotFoundException {
 
         try {
 
@@ -154,8 +154,6 @@ public class GoogleOAuthBase {
             }
 
         } catch (IOException ex) {
-            throw new IOException("could not unregister profile for authzEntryId=" + authzEntryId, ex);
-        } catch (AuthzEntryNotFoundException ex) {
             throw new IOException("could not unregister profile for authzEntryId=" + authzEntryId, ex);
         } catch (OAuthSystemException ex) {
             throw new IOException("could not unregister profile for authzEntryId=" + authzEntryId, ex);
@@ -188,8 +186,6 @@ public class GoogleOAuthBase {
     public void setAuthzEntryMapper(IAuthzEntryMapper authzEntryMapper) {
         this.authzEntryMapper = authzEntryMapper;
     }
-    
-    
 
     private Properties getLocalProperties() throws IOException {
         Properties res = new Properties();

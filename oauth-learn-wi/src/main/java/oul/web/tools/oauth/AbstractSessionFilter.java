@@ -66,8 +66,10 @@ public abstract class AbstractSessionFilter implements Filter {
         }
 
         doBeforeProcessing(httpReq, httpRes);
-
-        chain.doFilter(request, response);
+       
+        if (!response.isCommitted()) {
+            chain.doFilter(request, response);
+        }
 
         doAfterProcessing(httpReq, httpRes);
 

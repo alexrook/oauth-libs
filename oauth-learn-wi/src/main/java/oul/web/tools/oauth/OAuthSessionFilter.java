@@ -28,7 +28,7 @@ public class OAuthSessionFilter extends AbstractSessionFilter {
     protected void doBeforeProcessing(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
-       super.doAfterProcessing(request, response);
+       super.doBeforeProcessing(request, response);
 
         try {
             String authzEntryId = authzEntryMapper.unmap(request);
