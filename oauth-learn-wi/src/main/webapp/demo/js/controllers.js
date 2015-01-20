@@ -16,7 +16,8 @@
  }
  }*/
 
-var STATES = {LOGGED: 1, NOTLOGGED: 2, ERROR: -1};
+var STATES = {NOTLOGGED: 1, LOGGED: 2, ERROR: -1};
+
 
 angular.module('todoApp.controllers', [])
 
@@ -70,8 +71,10 @@ angular.module('todoApp.controllers', [])
                             });
                 };
 
-                if ($scope.authId!==undefined) {
+                console.log($scope.authId);
+                if ($scope.authId !== undefined) {
                     $scope.getProfile();
                 }
 
+                console.log($scope.state);
             }]);
