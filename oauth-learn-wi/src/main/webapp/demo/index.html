@@ -32,17 +32,19 @@
                     </div>
                     <div id="user-info" class="navbar-header pull-right">
                         <div data-ng-show="state === STATES.LOGGED" class="logged-in" id="logged-in">
-                            <div>
+                            <div class="navbar-text">
                                 <a class="navbar-link" href="https://plus.google.com/me">{{profile.emails[0]}}</a>
                                 <a class="navbar-link" href="" data-ng-click="logout()">Sign out</a>
                             </div>
                             <img class="avatar" alt="user avatar"
                                  src="{{profile.imgUri}}">
                         </div>
-                        <div data-ng-show="state === STATES.NOTLOGGED" class="navbar-text" id="log-in">
-                            <div>
+                        <div data-ng-show="state === STATES.NOTLOGGED" class="log-in" id="log-in">
+                            <div class="navbar-text">
                                 <a class="navbar-link" href="../#/google-oauth">Sign in</a>
                             </div>
+                            <img class="avatar" alt="oauth avatar" 
+                                 src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Oauth_logo.svg">
                         </div>
                     </div>
                 </div>

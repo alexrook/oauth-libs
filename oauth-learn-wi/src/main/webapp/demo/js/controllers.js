@@ -16,14 +16,17 @@
  }
  }*/
 
+var STATES = {LOGGED: 1, NOTLOGGED: 2, ERROR: -1};
+
 angular.module('todoApp.controllers', [])
 
         .controller('MainCtrl', ['$scope', '$http', '$cookies',
             function ($scope, $http, $cookies) {
 
-                $scope.STATES = {LOGGED: 1, NOTLOGGED: 2, ERROR: -1};
-
                 $scope.authId = $cookies['AUTH_ID'];
+
+                $scope.STATES = STATES;
+                $scope.state = STATES.NOTLOGGED;
 
                 $scope.getProfile = function () {
 
@@ -35,14 +38,14 @@ angular.module('todoApp.controllers', [])
                     $http(req)
                             .success(function (data) {
                                 $scope.profile = data;
-                                $scope.state = $scope.STATES.LOGGED;
+                                $scope.state = STATES.LOGGED;
                             })
                             .error(function (data, status) {
                                 $scope.err = {
                                     data: data,
                                     status: status
                                 };
-                                $scope.state = $scope.STATES.ERROR;
+                                $scope.state = STATES.ERROR;
                                 console.log($scope.err);
                             });
                 };
@@ -54,7 +57,7 @@ angular.module('todoApp.controllers', [])
                                 delete $cookies['AUTH_ID'];
                                 $scope.authId = null;
                                 $scope.profile = null;
-                                $scope.state = $scope.STATES.NOTLOGGED;
+                                $scope.state = STATES.NOTLOGGED;
                             })
                             .error(function (data, status) {
 
@@ -62,12 +65,12 @@ angular.module('todoApp.controllers', [])
                                     data: data,
                                     status: status
                                 };
-                                $scope.state = $scope.STATES.ERROR;
+                                $scope.state = STATES.ERROR;
                                 console.log($scope.err);
                             });
                 };
 
-                if ($scope.authId) {
+                if ($scope.authId!==undefined) {
                     $scope.getProfile();
                 }
 
