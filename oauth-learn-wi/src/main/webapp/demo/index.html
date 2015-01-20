@@ -141,7 +141,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr data-ng-repeat="todo in todos" data-ng-click="editForm({{todo.todoId}})">
+                            <tr data-ng-repeat="todo in todos" data-ng-click="editForm(todo.todoId)">
                                 <td>{{todo.todoId}}</td>
                                 <td>{{todo.updated}}</td>
                                 <td>{{todo.content}}</td>

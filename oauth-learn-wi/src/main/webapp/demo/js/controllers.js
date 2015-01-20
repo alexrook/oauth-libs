@@ -44,6 +44,7 @@ angular.module('todoApp.controllers', [])
                             .success(function (data) {
                                 $scope.profile = data;
                                 $scope.state = STATES.LOGGED;
+                                $scope.getList();
                             })
                             .error(function (data, status) {
                                 $scope.err = {
@@ -63,6 +64,7 @@ angular.module('todoApp.controllers', [])
                                 $scope.authId = null;
                                 $scope.profile = null;
                                 $scope.state = STATES.NOTLOGGED;
+                                $scope.getList();
                             })
                             .error(function (data, status) {
 
@@ -85,11 +87,11 @@ angular.module('todoApp.controllers', [])
                     if ($scope.state === STATES.NOTLOGGED) {
                         uri = uri + '/all';
                     }
-                    
+
                     $http
                             .get(uri)
                             .success(function (data) {
-                                $scope.todos=data.todos?data.todos:data;
+                                $scope.todos = data.todos ? data.todos : data;
                             })
                             .error(function (data, status) {
 
@@ -107,7 +109,7 @@ angular.module('todoApp.controllers', [])
                     $scope.getProfile();
                 }
 
-                $scope.getList();
+
 
                 console.log($scope.state);
             }]);
