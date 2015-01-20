@@ -51,7 +51,17 @@
             </nav>
             <header class="page-header">
                 <h1>JAX-RS Demo Application with Google OAuth 2 Authorization</h1>
-                <p class="lead">TODO</p>
+                
+                <p class="lead" id="user-logged-intro" data-ng-show="state === STATES.LOGGED">You are logged-in as a user application
+                    <span class="username">{{profile.emails[0]}}</span> 
+                    Use the form below to edit and add to todo-list. 
+                    The todo-list data will be displayed for the logged-in user</p>
+
+                <p class="lead" id="user-notlogged-intro" data-ng-show="state === STATES.NOTLOGGED">
+                    You are not 
+                    <a class="navbar-link" href="../#/google-oauth">logged</a>
+                    into the application, a list of all todo's will be read-only.</p>
+
             </header>
             <h3>Add and edit Todos</h3>
             <div class="row">
