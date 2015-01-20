@@ -85,8 +85,6 @@
                     </pre>
                 </div>
 
-                <p>{{updated}}</p>
-                <p>{{content}}</p>
             </header>
             <div class="row" data-ng-show="state === STATES.LOGGED">
                 <div class="col-md-12"> 
@@ -111,8 +109,13 @@
                                        id="content"
                                        class="form-control">
                             </div>
-                            <button tabindex="4" class="btn btn-primary">Edit</button>
-                            <button tabindex="5" class="btn btn-primary">Delete</button>
+                            <button tabindex="4" class="btn btn-primary" 
+                                    name="add" id="add">Add</button>
+                            <button tabindex="4" class="btn btn-primary"
+                                    name="edit" id="edit">Edit</button>
+                            <button tabindex="5" class="btn btn-primary"
+                                    name="delete" id="delete">Delete</button>
+
                         </fieldset>
                     </form>
                 </div>
@@ -137,6 +140,13 @@
                                 </th>
                             </tr>
                         </thead>
+                        <tbody>
+                            <tr data-ng-repeat="todo in todos" data-ng-click="editForm({{todo.todoId}})">
+                                <td>{{todo.todoId}}</td>
+                                <td>{{todo.updated}}</td>
+                                <td>{{todo.content}}</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
             </div>

@@ -30,3 +30,7 @@
 h3 {
     margin-top: 30px;
 }
+
+.table-striped tr {
+    cursor: pointer;
+}

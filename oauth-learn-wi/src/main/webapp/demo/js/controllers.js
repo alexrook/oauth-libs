@@ -28,8 +28,12 @@ angular.module('todoApp.controllers', [])
 
                 $scope.STATES = STATES;
                 $scope.state = STATES.NOTLOGGED;
+                $scope.todos = [];
 
                 $scope.getProfile = function () {
+
+                    if ($scope.state === STATES.ERROR)
+                        return;
 
                     var req = {
                         method: 'GET',
@@ -67,6 +71,33 @@ angular.module('todoApp.controllers', [])
                                     status: status
                                 };
                                 $scope.state = STATES.ERROR;
+
+                            });
+                };
+
+
+                $scope.getList = function () {
+
+                    if ($scope.state === STATES.ERROR)
+                        return;
+
+                    var uri = '../oauth/demo/todo';
+                    if ($scope.state === STATES.NOTLOGGED) {
+                        uri = uri + '/all';
+                    }
+                    
+                    $http
+                            .get(uri)
+                            .success(function (data) {
+                                $scope.todos=data.todos?data.todos:data;
+                            })
+                            .error(function (data, status) {
+
+                                $scope.err = {
+                                    data: data,
+                                    status: status
+                                };
+                                $scope.state = STATES.ERROR;
                                 console.log($scope.err);
                             });
                 };
@@ -75,6 +106,8 @@ angular.module('todoApp.controllers', [])
                 if ($scope.authId !== undefined) {
                     $scope.getProfile();
                 }
+
+                $scope.getList();
 
                 console.log($scope.state);
             }]);
