@@ -40,11 +40,10 @@ angular.module('todoApp.controllers', [])
                         url: '../oauth/google/profile'
                     };
 
-                    $http(req)
+                    return $http(req)
                             .success(function (data) {
                                 $scope.profile = data;
                                 $scope.state = STATES.LOGGED;
-                                $scope.getList();
                             })
                             .error(function (data, status) {
                                 $scope.err = {
@@ -57,14 +56,13 @@ angular.module('todoApp.controllers', [])
                 };
 
                 $scope.logout = function () {
-                    $http
+                    return  $http
                             .get('../oauth/google/logout')
                             .success(function () {
                                 delete $cookies['AUTH_ID'];
                                 $scope.authId = null;
                                 $scope.profile = null;
                                 $scope.state = STATES.NOTLOGGED;
-                                $scope.getList();
                             })
                             .error(function (data, status) {
 
@@ -87,8 +85,7 @@ angular.module('todoApp.controllers', [])
                     if ($scope.state === STATES.NOTLOGGED) {
                         uri = uri + '/all';
                     }
-
-                    $http
+                    return $http
                             .get(uri)
                             .success(function (data) {
                                 $scope.todos = data.todos ? data.todos : data;
@@ -106,7 +103,11 @@ angular.module('todoApp.controllers', [])
 
                 console.log($scope.authId);
                 if ($scope.authId !== undefined) {
-                    $scope.getProfile();
+                    $scope.getProfile().then(function () {
+                        $scope.getList();
+                    });
+                } else {
+                    $scope.getList();
                 }
 
 

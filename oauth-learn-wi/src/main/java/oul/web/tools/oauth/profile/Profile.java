@@ -147,7 +147,7 @@ public class Profile {
                     json.getJsonObject("name").getString("familyName"),
                     getOptField("displayName", json.getJsonObject("name")));
 
-            this.domain = getOptField("domain", json);
+            this.domain = getOptField("domain", json).toLowerCase();
 
             String uri = getOptField("url", json.getJsonObject("image"));
             this.imgURI = uri.length() > 0 ? new URI(uri) : null;
@@ -229,6 +229,27 @@ public class Profile {
 
     }
 
+    public boolean isDomainMember(String domain) {
+
+        if ((domain == null) || (domain.isEmpty())) {
+            return true;
+        }
+
+        domain = domain.toLowerCase();
+
+        if ((getDomain() != null) && (!getDomain().isEmpty())) {
+            return getDomain().endsWith(domain);
+        }
+
+        for (URI email : emails) {
+            if (email.toString().toLowerCase().endsWith(domain)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public String getId() {
         return id;
     }
@@ -242,7 +263,7 @@ public class Profile {
     }
 
     public void setDomain(String domain) {
-        this.domain = domain;
+        this.domain = domain != null ? domain : "";
     }
 
     public Name getName() {

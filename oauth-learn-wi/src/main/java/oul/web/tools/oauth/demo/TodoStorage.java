@@ -15,7 +15,7 @@ public class TodoStorage {
     private final Map<String, Todo> internal = new HashMap<String, Todo>(15);
 
     public TodoStorage() {
-        //fill storage dummu data for debug purposes
+        //fill storage dummy data for debug purposes
         for (int i = 0; i < 15; i++) {
 
             Todo todo = new Todo("" + 1, "" + i, "todo content" + i, new Date());
