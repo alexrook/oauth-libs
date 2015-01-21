@@ -26,7 +26,7 @@
         <script type="text/javascript">
 
             $(function () {
-                $('#updated').datetimepicker();
+                $('#update').datetimepicker();
             });
 
         </script>
@@ -49,7 +49,7 @@
                         <div data-ng-show="state === STATES.LOGGED" class="logged-in" id="logged-in">
                             <div class="navbar-text">
                                 <a class="navbar-link" href="https://plus.google.com/me">{{profile.emails[0]}}</a>
-                                <a class="navbar-link" href="" data-ng-click="logout()">Sign out</a>
+                                <a class="navbar-link" href="" data-ng-click="doLogout()">Sign out</a>
                             </div>
                             <img class="avatar" alt="user avatar" 
                                  data-ng-src="{{profile.imgUri}}">
@@ -91,10 +91,15 @@
                     <form name="todoF" class="form-inline" role="form">
                         <fieldset>
                             <legend>Add and edit Todos</legend>
+
+                            <input type="hidden" 
+                                   name="todoId" id="todoId" 
+                                   data-ng-model="currentTodo.todoId">
+
                             <div class="form-group">
-                                <label for="update" >Updated:</label>
+                                <label for="update" >Update:</label>
                                 <input tabindex="1" 
-                                       data-ng-model="updated"
+                                       data-ng-model="currentTodo.update"
                                        type="text"
                                        name="update" id="update" 
                                        class="form-control">
@@ -102,19 +107,23 @@
                             <div class="form-group">
                                 <label for="content">Content</label>
                                 <input tabindex="2" 
-                                       data-ng-model="content"
+                                       data-ng-model="currentTodo.content"
                                        type="text" 
                                        size='57'
                                        name="content" 
                                        id="content"
                                        class="form-control">
                             </div>
-                            <button tabindex="4" class="btn btn-primary" 
-                                    name="add" id="add">Add</button>
+                            <button tabindex="3" class="btn btn-primary" 
+                                    name="add" id="add"
+                                    data-ng-click="doPPD('PUT')"
+                                    >Add</button>
                             <button tabindex="4" class="btn btn-primary"
-                                    name="edit" id="edit">Edit</button>
+                                    name="edit" id="edit"
+                                    >Edit</button>
                             <button tabindex="5" class="btn btn-primary"
                                     name="delete" id="delete">Delete</button>
+                            <button type="reset" tabindex="6" class="btn">Clear</button>
 
                         </fieldset>
                     </form>
@@ -141,7 +150,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr data-ng-repeat="todo in todos" data-ng-click="editForm(todo.todoId)">
+                            <tr data-ng-repeat="todo in todos track by todo.todoId"
+                                data-ng-click="doEdit(todo.todoId)">
                                 <td>{{todo.todoId}}</td>
                                 <td>{{todo.update}}</td>
                                 <td>{{todo.content}}</td>

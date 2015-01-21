@@ -2,33 +2,20 @@
 
 /* Controllers */
 
-/*       {
- "id": "1234567890",
- "domain": "",
- "imgUri": "http://---",
- "emails": [
- "user@example.com"
- ],
- "name": {
- "firstName": "User",
- "lastName": "Ex",
- "displayName": "User Ex"
- }
- }*/
-
 var STATES = {NOTLOGGED: 1, LOGGED: 2, ERROR: -1};
-
 
 angular.module('todoApp.controllers', [])
 
         .controller('MainCtrl', ['$scope', '$http', '$cookies',
             function ($scope, $http, $cookies) {
 
+
                 $scope.authId = $cookies['AUTH_ID'];
 
                 $scope.STATES = STATES;
                 $scope.state = STATES.NOTLOGGED;
                 $scope.todos = [];
+                $scope.currentTodo = {};
 
                 $scope.getProfile = function () {
 
@@ -85,10 +72,21 @@ angular.module('todoApp.controllers', [])
                     if ($scope.state === STATES.NOTLOGGED) {
                         uri = uri + '/all';
                     }
-                    return $http
-                            .get(uri)
+
+                    var req = {
+                        method: 'GET',
+                        url: uri
+                    };
+
+                    return $http(req)
                             .success(function (data) {
-                                $scope.todos = data.todos ? data.todos : data;
+
+                                for (var i = 0; i < data.length; i++) {
+                                    data[i].update = new Date(data[i].update).toLocaleString();
+                                }
+                                $scope.todos = data;
+
+
                             })
                             .error(function (data, status) {
 
@@ -99,6 +97,84 @@ angular.module('todoApp.controllers', [])
                                 $scope.state = STATES.ERROR;
                                 console.log($scope.err);
                             });
+                };
+
+
+                $scope.getTodo = function (todoId) {
+
+                    if ($scope.state === STATES.ERROR)
+                        return;
+
+                    var uri = '../oauth/demo/todo';
+
+                    var req = {
+                        method: 'GET',
+                        url: uri
+                    };
+
+                    return $http(req)
+                            .success(function (data) {
+                                $scope.currentTodo = data;
+                            })
+                            .error(function (data, status) {
+
+                                $scope.err = {
+                                    data: data,
+                                    status: status
+                                };
+                                $scope.state = STATES.ERROR;
+                                console.log($scope.err);
+                            });
+                };
+
+                $scope.ppdTodo = function (method) {
+
+                    if ($scope.state !== STATES.LOGGED)
+                        return;
+
+                    var uri = '../oauth/demo/todo';
+
+                    var req = {
+                        method: method,
+                        url: uri,
+                        data: $scope.currentTodo
+                    };
+
+                    return $http(req)
+                            .success(function (data) {
+                                if (data) {
+                                    $scope.currentTodo = data;
+                                }
+                            })
+                            .error(function (data, status) {
+
+                                $scope.err = {
+                                    data: data,
+                                    status: status
+                                };
+                                $scope.state = STATES.ERROR;
+                                console.log($scope.err);
+                            });
+                };
+
+                $scope.doLogout = function () {
+                    $scope.logout().then(function () {
+                        $scope.getList();
+                    });
+                };
+
+                $scope.doPPD = function (method) {
+                    if ($scope.state !== STATES.LOGGED)
+                        return;
+                    $scope.ppdTodo(method).then(function () {
+                        $scope.getList();
+                    });
+                };
+
+                $scope.doEdit = function (todoId) {
+                    if ($scope.state !== STATES.LOGGED)
+                        return;
+                    $scope.getTodo(todoId);
                 };
 
                 console.log($scope.authId);
@@ -112,5 +188,4 @@ angular.module('todoApp.controllers', [])
 
 
 
-                console.log($scope.state);
             }]);

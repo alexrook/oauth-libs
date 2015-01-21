@@ -12,6 +12,17 @@ import java.util.UUID;
  */
 public class TodoStorage {
 
+    public static class TodoNotFoundException extends Exception {
+
+        public TodoNotFoundException() {
+        }
+
+        public TodoNotFoundException(String message) {
+            super(message);
+        }
+
+    }
+
     private final Map<String, Todo> internal = new HashMap<String, Todo>(15);
 
     public TodoStorage() {
@@ -31,6 +42,18 @@ public class TodoStorage {
     public String put(Todo todo) {
         internal.put(todo.getTodoId(), todo);
         return todo.getTodoId();
+    }
+
+    public String edit(String todoId, String content, Date date) throws TodoNotFoundException {
+        Todo todo = internal.get(todoId);
+        if (todo != null) {
+            todo.setContent(content);
+            todo.setUpdate(date);
+            return put(todo);
+        } else {
+            throw new TodoNotFoundException("updated todo with todoId=" + todoId + " not found in storage");
+        }
+
     }
 
     public String put(String userId, String content, Date date) {
