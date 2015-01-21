@@ -59,7 +59,7 @@ public abstract class AbstractSessionFilter implements Filter {
         HttpServletResponse httpRes = (HttpServletResponse) response;
 
         if ((excludeRegex != null) && (!excludeRegex.isEmpty())) {
-            if (httpReq.getServletPath().toLowerCase().matches(excludeRegex)) {
+            if (httpReq.getRequestURI().toLowerCase().matches(excludeRegex)) {
                 chain.doFilter(request, response);
                 return;
             }
