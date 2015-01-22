@@ -1,11 +1,10 @@
 package oul.web.tools.oauth.demo;
 
 import java.net.URI;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -17,7 +16,6 @@ import javax.ws.rs.core.Response;
 /**
  * @author moroz
  */
-import javax.ws.rs.FormParam;
 import javax.ws.rs.PUT;
 import javax.ws.rs.PathParam;
 import oul.web.tools.oauth.AbstractSessionFilter;
@@ -56,17 +54,17 @@ public class TodoRS {
     }
 
     @GET
-    @Path("{id:\\d+}")
+    @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTodo(@Context HttpServletRequest request,
-            @PathParam("id") int id) {
+            @PathParam("id") final String id) {
         Profile user = (Profile) request.getAttribute(AbstractSessionFilter.PRIFILE_ATTRIBUTE);
 
         return call(user, new ICallback() {
 
             @Override
             public Response callback(Profile user) {
-                return Response.ok(storage.list(user.getId())).build();
+                return Response.ok(storage.get(id)).build();
             }
         });
 
@@ -76,16 +74,13 @@ public class TodoRS {
      * Updates Todo
      *
      * @param request
-     * @param todoId
-     * @param content
-     * @param update
+     * @param editTodo
      * @return
      */
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response postTodo(@Context HttpServletRequest request,
-            @FormParam("todoId") final String todoId,
-            @FormParam("content") final String content,
-            @FormParam("update") final Date update) {
+            final Todo editTodo) {
 
         Profile user = (Profile) request.getAttribute(AbstractSessionFilter.PRIFILE_ATTRIBUTE);
 
@@ -94,8 +89,8 @@ public class TodoRS {
             @Override
             public Response callback(Profile user) {
                 try {
-                    String todoID = storage.edit(todoId, content, update);
-                    return Response.noContent().build();
+                    String todoID = storage.edit(editTodo.getTodoId(), editTodo.getContent(), editTodo.getUpdate());
+                    return Response.noContent().build(); //?
                 } catch (TodoStorage.TodoNotFoundException ex) {
                     return Response.status(Response.Status.BAD_REQUEST).build();
                 }
@@ -107,25 +102,54 @@ public class TodoRS {
      * put new Todo to storage
      *
      * @param request
-     * @param content
-     * @param update
+     * @param newTodo
      * @return
      */
     @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response putTodo(@Context HttpServletRequest request,
-            @FormParam("content") final String content,
-            @FormParam("update") final Date update) {
+            final Todo newTodo) {
         Profile user = (Profile) request.getAttribute(AbstractSessionFilter.PRIFILE_ATTRIBUTE);
 
         return call(user, new ICallback() {
 
             @Override
             public Response callback(Profile user) {
-                String todoID = storage.put(user.getId(), content, update);
+                String todoID = storage.put(user.getId(), newTodo.getContent(),
+                        newTodo.getUpdate());
 
                 return Response.created(
-                        URI.create(todoID)
+                        URI.create("/demo/todo/" + todoID)
                 ).build();
+            }
+        });
+    }
+
+    /**
+     * deletes todo
+     *
+     * @param request
+     * @param id - todo id
+     * @return deleted todo id
+     */
+    @DELETE
+    @Path("{id}")
+    public Response deleteTodo(@Context HttpServletRequest request,
+            @PathParam("id") final String id) {
+        Profile user = (Profile) request.getAttribute(AbstractSessionFilter.PRIFILE_ATTRIBUTE);
+
+        return call(user, new ICallback() {
+
+            @Override
+            public Response callback(Profile user) {
+
+                try {
+                    String todoID = storage.delete(id);
+                    return Response.noContent().build();
+                } catch (TodoStorage.TodoNotFoundException ex) {
+                    return Response.status(Response.Status.BAD_REQUEST).build();
+                }
+
             }
         });
     }

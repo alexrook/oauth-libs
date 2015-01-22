@@ -80,7 +80,7 @@
                 <div class="lead" id="user-notlogged-intro" data-ng-show="state === STATES.ERROR">
                     Sorry, an error has occurred,
                     please report this developer
-                    <pre>
+                    <pre> 
                         {{err|json}}
                     </pre>
                 </div>
@@ -114,15 +114,19 @@
                                        id="content"
                                        class="form-control">
                             </div>
+                            
                             <button tabindex="3" class="btn btn-primary" 
                                     name="add" id="add"
                                     data-ng-click="doPPD('PUT')"
                                     >Add</button>
                             <button tabindex="4" class="btn btn-primary"
                                     name="edit" id="edit"
+                                    data-ng-click="doPPD('POST')"
                                     >Edit</button>
                             <button tabindex="5" class="btn btn-primary"
-                                    name="delete" id="delete">Delete</button>
+                                    name="delete" id="delete"
+                                    data-ng-click="doPPD('DELETE')"
+                                    >Delete</button>
                             <button type="reset" tabindex="6" class="btn">Clear</button>
 
                         </fieldset>
@@ -142,7 +146,7 @@
                                     ID
                                 </th>
                                 <th>
-                                    updated
+                                    update
                                 </th>
                                 <th>
                                     Content

@@ -45,25 +45,17 @@
     </filter-mapping>
     <filter-mapping>
         <filter-name>OAuthSessionFilter</filter-name>
-        <url-pattern>/oauth/demo/todo</url-pattern>
+        <url-pattern>/oauth/demo/todo/*</url-pattern>
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>INCLUDE</dispatcher>
     </filter-mapping>
     <filter-mapping>
         <filter-name>OAuthDomainFilter</filter-name>
-        <url-pattern>/oauth/demo/todo</url-pattern>
+        <url-pattern>/oauth/demo/todo/*</url-pattern>
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>INCLUDE</dispatcher>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>OAuthSessionFilter</filter-name>
-        <url-pattern>/oauth/demo/todo/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>OAuthSessionFilter</filter-name>
-        <url-pattern>/oauth/demo/todo/*</url-pattern>
     </filter-mapping>
     <servlet>
         <servlet-name>GoogleOAuthServlet</servlet-name>

@@ -68,9 +68,9 @@ angular.module('todoApp.controllers', [])
                     if ($scope.state === STATES.ERROR)
                         return;
 
-                    var uri = '../oauth/demo/todo';
+                    var uri = '../oauth/demo/todo/';
                     if ($scope.state === STATES.NOTLOGGED) {
-                        uri = uri + '/all';
+                        uri = uri + 'all';
                     }
 
                     var req = {
@@ -105,7 +105,7 @@ angular.module('todoApp.controllers', [])
                     if ($scope.state === STATES.ERROR)
                         return;
 
-                    var uri = '../oauth/demo/todo';
+                    var uri = '../oauth/demo/todo/' + todoId;
 
                     var req = {
                         method: 'GET',
@@ -114,6 +114,7 @@ angular.module('todoApp.controllers', [])
 
                     return $http(req)
                             .success(function (data) {
+                                data.update = new Date(data.update).toLocaleString();
                                 $scope.currentTodo = data;
                             })
                             .error(function (data, status) {
@@ -132,12 +133,23 @@ angular.module('todoApp.controllers', [])
                     if ($scope.state !== STATES.LOGGED)
                         return;
 
-                    var uri = '../oauth/demo/todo';
+                    var uri = '../oauth/demo/todo/';
+
+                    var todo = angular.copy($scope.currentTodo);
+
+                    todo.update = $scope.currentTodo.update ?
+                            new Date($scope.currentTodo.update) : new Date();
+
+                    console.log($scope.currentTodo.update);
+
+                    if (method === 'DELETE') {
+                        uri = uri + todo.todoId;
+                    }
 
                     var req = {
                         method: method,
                         url: uri,
-                        data: $scope.currentTodo
+                        data: method === 'DELETE' ? null : todo
                     };
 
                     return $http(req)
