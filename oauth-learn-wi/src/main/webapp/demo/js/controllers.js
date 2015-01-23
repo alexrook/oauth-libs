@@ -186,10 +186,11 @@ angular.module('todoApp.controllers', [])
                     });
                 };
 
-                $scope.doEdit = function (todoId) {
+                $scope.doEdit = function (todoId,$event) {
                     if ($scope.state !== STATES.LOGGED)
                         return;
                     $scope.getTodo(todoId);
+                    
                 };
 
                 //console.log($scope.authId);

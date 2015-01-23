@@ -145,9 +145,10 @@
             <div class="row"  data-ng-show="state >= STATES.NOTLOGGED" >
                 <div class="col-md-12">
                     <h3>TODO List</h3>
-                    <table class="table table-striped">
+                    <table class="table table-hover">
 
                         <thead>
+
                             <tr>
                                 <th>
                                     ID
@@ -162,7 +163,8 @@
                         </thead>
                         <tbody>
                             <tr data-ng-repeat="todo in todos track by todo.todoId"
-                                data-ng-click="doEdit(todo.todoId)">
+                                data-ng-click="doEdit(todo.todoId, $event)"
+                                data-ng-class="{info:currentTodo.todoId === todo.todoId}">
                                 <td class="todoId">{{todo.todoId}}</td>
                                 <td>{{todo.update}}</td>
                                 <td>{{todo.content}}</td>

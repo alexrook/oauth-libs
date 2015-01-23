@@ -27,16 +27,17 @@
     color: coral;
 }
 
-h3 {
-    margin-top: 30px;
-}
-
-.table-striped tr {
-    cursor: pointer;
-}
-
 .todoId {
     color: coral;
     font-size: small;
     font-family: monospace;
 }
+
+h3 {
+    margin-top: 30px;
+}
+
+tbody tr {
+    cursor: pointer;
+}
+
