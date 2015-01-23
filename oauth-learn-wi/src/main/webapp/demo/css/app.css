@@ -34,3 +34,9 @@ h3 {
 .table-striped tr {
     cursor: pointer;
 }
+
+.todoId {
+    color: coral;
+    font-size: small;
+    font-family: monospace;
+}

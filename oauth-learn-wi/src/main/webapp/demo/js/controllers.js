@@ -15,7 +15,7 @@ angular.module('todoApp.controllers', [])
                 $scope.STATES = STATES;
                 $scope.state = STATES.NOTLOGGED;
                 $scope.todos = [];
-                $scope.currentTodo = {};
+                $scope.currentTodo = {todoId: null};//null here as marker for ui at startup
 
                 $scope.getProfile = function () {
 
@@ -180,6 +180,9 @@ angular.module('todoApp.controllers', [])
                         return;
                     $scope.ppdTodo(method).then(function () {
                         $scope.getList();
+                        if ((method === 'DELETE') || (method === 'PUT')) {
+                            $scope.currentTodo.todoId = null;
+                        }
                     });
                 };
 
@@ -189,7 +192,8 @@ angular.module('todoApp.controllers', [])
                     $scope.getTodo(todoId);
                 };
 
-                console.log($scope.authId);
+                //console.log($scope.authId);
+
                 if ($scope.authId !== undefined) {
                     $scope.getProfile().then(function () {
                         $scope.getList();

@@ -90,7 +90,12 @@
                 <div class="col-md-12"> 
                     <form name="todoF" class="form-inline" role="form">
                         <fieldset>
-                            <legend>Add and edit Todos</legend>
+                            <legend>Add and edit Todos 
+                                <span data-ng-hide="currentTodo.todoId === null"> 
+                                    , current todoId:
+                                    <span class="todoId">{{currentTodo.todoId}}</span>
+                                </span>
+                            </legend>
 
                             <input type="hidden" 
                                    name="todoId" id="todoId" 
@@ -114,7 +119,7 @@
                                        id="content"
                                        class="form-control">
                             </div>
-                            
+
                             <button tabindex="3" class="btn btn-primary" 
                                     name="add" id="add"
                                     data-ng-click="doPPD('PUT')"
@@ -122,12 +127,14 @@
                             <button tabindex="4" class="btn btn-primary"
                                     name="edit" id="edit"
                                     data-ng-click="doPPD('POST')"
+                                    data-ng-disabled="currentTodo.todoId === null"
                                     >Edit</button>
                             <button tabindex="5" class="btn btn-primary"
                                     name="delete" id="delete"
                                     data-ng-click="doPPD('DELETE')"
+                                    data-ng-disabled="currentTodo.todoId === null"
                                     >Delete</button>
-                            <button type="reset" tabindex="6" class="btn">Clear</button>
+
 
                         </fieldset>
                     </form>
@@ -135,7 +142,7 @@
             </div>
 
 
-            <div class="row"  data-ng-show="state >= STATES.NOTLOGGED">
+            <div class="row"  data-ng-show="state >= STATES.NOTLOGGED" >
                 <div class="col-md-12">
                     <h3>TODO List</h3>
                     <table class="table table-striped">
@@ -156,7 +163,7 @@
                         <tbody>
                             <tr data-ng-repeat="todo in todos track by todo.todoId"
                                 data-ng-click="doEdit(todo.todoId)">
-                                <td>{{todo.todoId}}</td>
+                                <td class="todoId">{{todo.todoId}}</td>
                                 <td>{{todo.update}}</td>
                                 <td>{{todo.content}}</td>
                             </tr>
