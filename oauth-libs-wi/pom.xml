@@ -5,15 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>oauth-learn</groupId>
+        <groupId>oauth-libs</groupId>
         <artifactId>main</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>oauth-learn-wi</artifactId>
+    <artifactId>oauth-libs-wi</artifactId>
     <packaging>war</packaging>
 
-    <name>oauth-learn-wi</name>
+    <name>oauth-libs-wi</name>
     <properties>
         <org-netbeans-modules-maven-jaxws.rest_2e_config_2e_type>user</org-netbeans-modules-maven-jaxws.rest_2e_config_2e_type>
     </properties>
