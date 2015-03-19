@@ -2,7 +2,7 @@
 
 ### Create file 'local.properties'
 
-To run this project on Jboss 7.1.1 you need create 'local.properties' file
+To run this project on Jboss 7.1.1 you need create 'local.properties' file 
 with next data:
 
     google.oauth.clientId=<your-google-app-clientID>
@@ -13,6 +13,7 @@ with next data:
     google.oauth.responseType=code
     google.api.profileUri=https://www.googleapis.com/plus/v1/people/me
 
+see also example
 
 ###Setup http BASIC auth on JBoss
 To work with 'restricted area'   with BASIC Auth [rfc2617](https://www.ietf.org/rfc/rfc2617.txt)  on jboss 7.1.1 run script:
