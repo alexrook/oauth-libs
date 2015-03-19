@@ -11,7 +11,7 @@ with next data:
     google.oauth.revokeUri=https://accounts.google.com/o/oauth2/revoke
     google.oauth.scope=profile email
     google.oauth.responseType=code
-    google.api.profileUri=https://www.googleapis.com/plus/v1/people/me'
+    google.api.profileUri=https://www.googleapis.com/plus/v1/people/me
 
 
 ###Setup http BASIC auth on JBoss
